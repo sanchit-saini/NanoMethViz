@@ -17,7 +17,7 @@ plot_grange <- function(
     binary_threshold = NULL,
     avg_method = c("mean", "median"),
     spaghetti = FALSE,
-    heatmap = FALSE,
+    heatmap = TRUE,
     heatmap_subsample = 50,
     gene_anno = TRUE,
     smoothing_window = 2000,

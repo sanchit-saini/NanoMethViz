@@ -19,7 +19,7 @@ plot_region(x, chr, start, end, ...)
   binary_threshold = NULL,
   avg_method = c("mean", "median"),
   spaghetti = FALSE,
-  heatmap = FALSE,
+  heatmap = TRUE,
   heatmap_subsample = 50,
   smoothing_window = 2000,
   gene_anno = TRUE,
@@ -39,7 +39,7 @@ plot_region(x, chr, start, end, ...)
   binary_threshold = NULL,
   avg_method = c("mean", "median"),
   spaghetti = FALSE,
-  heatmap = FALSE,
+  heatmap = TRUE,
   heatmap_subsample = 50,
   smoothing_window = 2000,
   gene_anno = TRUE,
@@ -59,7 +59,7 @@ plot_region(x, chr, start, end, ...)
   binary_threshold = NULL,
   avg_method = c("mean", "median"),
   spaghetti = FALSE,
-  heatmap = FALSE,
+  heatmap = TRUE,
   heatmap_subsample = 50,
   smoothing_window = 2000,
   gene_anno = TRUE,
@@ -79,7 +79,7 @@ plot_region(x, chr, start, end, ...)
   binary_threshold = NULL,
   avg_method = c("mean", "median"),
   spaghetti = FALSE,
-  heatmap = FALSE,
+  heatmap = TRUE,
   heatmap_subsample = 50,
   smoothing_window = 2000,
   gene_anno = TRUE,
@@ -120,6 +120,8 @@ closer to an average within the more common methylation state.}
 \item{heatmap_subsample}{how many packed rows of reads to subsample to.}
 
 \item{smoothing_window}{the window size for smoothing the trend line.}
+
+\item{gene_anno}{whether to show gene annotation.}
 
 \item{window_prop}{the size of flanking region to plot. Can be a vector of two
 values for left and right window size. Values indicate proportion of gene

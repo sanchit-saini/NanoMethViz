@@ -11,8 +11,9 @@ plot_grange(
   binary_threshold = NULL,
   avg_method = c("mean", "median"),
   spaghetti = FALSE,
-  heatmap = FALSE,
+  heatmap = TRUE,
   heatmap_subsample = 50,
+  gene_anno = TRUE,
   smoothing_window = 2000,
   window_prop = 0,
   palette = ggplot2::scale_colour_brewer(palette = "Set1"),
@@ -42,6 +43,8 @@ closer to an average within the more common methylation state.}
 \item{heatmap}{whether or not read-methylation heatmap should be shown.}
 
 \item{heatmap_subsample}{how many packed rows of reads to subsample to.}
+
+\item{gene_anno}{whether to show gene annotation.}
 
 \item{smoothing_window}{the window size for smoothing the trend line.}
 

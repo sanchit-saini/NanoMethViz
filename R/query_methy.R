@@ -66,20 +66,17 @@ query_methy <- function(
     } else if (input_type == "modbam") {
         out <- query_methy_modbam(x, chr, start, end, mod_code)
         if (truncate) {
-            # truncate data to within requested region
-            pos_list <- purrr::map2(start, end, ~c(start = .x, end = .y))
-
-            truncate_fn <- function(x, pos_range) {
+            truncate_fn <- function(x, start, end) {
                 x %>%
                     dplyr::filter(
-                        .data$pos >= pos_range["start"],
-                        .data$pos <= pos_range["end"]
+                        .data$pos >= start,
+                        .data$pos <= end
                     )
             }
 
-            out <- purrr::map2(out, pos_list, truncate_fn)
+            # truncate each query by its start and end positions
+            out <- purrr::pmap(list(out, start, end), truncate_fn)
         }
-
     } else {
         stop("'x' is not a recognised file type")
     }
@@ -159,50 +156,41 @@ query_methy_gene <- function(x, gene, window_prop = 0, simplify = TRUE) {
     )
 }
 
-can_open_tabix <- function(x) {
-    assert_readable(x)
-    out <- TRUE
-
-    tryCatch(
-        Rsamtools::TabixFile(x),
-        warning = function(x) { out <<- FALSE },
-        error = function(x) { out <<- FALSE }
-    )
-
-    return(out)
-}
-
-empty_methy_query_output <- function() {
-    tibble::tibble(
-        "sample" = character(),
-        "chr" = character(),
-        "pos" = integer(),
-        "strand" = character(),
-        "statistic" = numeric(),
-        "read_name" = character()
-    )
-}
-
 #' @importFrom utils read.table
 query_methy_tabix <- function(x, chr, start, end, force) {
+    get_missing_seqs <- function(x) {
+        # query tabix index for missing sequences
+        tabix_seqs <- get_tabix_sequences(paste0(x, ".tbi"))
+
+        which(!chr %in% tabix_seqs)
+    }
+
     # set up tabix file
     tabix_file <- Rsamtools::TabixFile(x)
 
-    # query tabix index for missing sequences
-    tabix_seqs <- get_tabix_sequences(paste0(x, ".tbi"))
-    miss <- which(!chr %in% tabix_seqs)
-    miss_seqs <- unique(chr[miss])
-    if (length(miss_seqs) != 0) {
+    # set up output
+    out <- list()
+    for (i in seq_along(chr)) {
+        nm <- paste0(chr[i], ":", start[i], "-", end[i])
+        out[[nm]] <- empty_methy_query_output()
+    }
+
+    miss <- get_missing_seqs(x)
+    # if missing sequences, warn and remove from query
+    if (length(miss) != 0) {
+        miss_seqs <- unique(chr[miss])
         warning(
-            "requested sequences missing from tabix file:",
+            "requested sequences missing from tabix file and will be excluded from query:",
             paste(miss_seqs, collapse = ", ")
         )
-        # remove missing sequences
+
+        # remove queries with missing sequences
         chr <- chr[-miss]
         start <- start[-miss]
         end <- end[-miss]
     }
 
+    # if no sequences left, return empty output
     if (length(chr) == 0) {
         if (!force) {
             stop("no chromosome matches between query and tabix file, please check chromosome format matches between query and methylation file.")
@@ -220,34 +208,32 @@ query_methy_tabix <- function(x, chr, start, end, force) {
         if (length(x) == 0) {
             return(empty_methy_query_output())
         }
+
+        # help readr function recognise input as data text rather than path
         if (length(x) == 1) {
             x <- paste0(x, "\n")
         }
 
-        col_names <- methy_col_names()
-        # using readr::read_tsv on character vectors seems to leak memory
-        as_tibble(
-            utils::read.table(
-                textConnection(x),
-                col.names = col_names,
-                sep = "\t",
-                colClasses = c(
-                    "character",
-                    "character",
-                    "integer",
-                    "character",
-                    "numeric",
-                    "character"
-                ),
-                header = FALSE
+        read_methy_table <- function(x) {
+            readr::read_table(
+                x,
+                col_names = methy_col_names(),
+                col_types = methy_col_types()
             )
-        )
+        }
+        read_methy_table(x)
     }
 
-    lapply(
+    methy_data <- lapply(
         query_result,
         parse_tabix
     )
+
+    for (i in seq_along(methy_data)) {
+        out[[names(query_result)[i]]] <- methy_data[[i]]
+    }
+
+    out
 }
 
 query_methy_modbam <- function(x, chr, start, end, mod_code) {
@@ -296,13 +282,37 @@ query_methy_modbam <- function(x, chr, start, end, mod_code) {
     out
 }
 
+can_open_tabix <- function(x) {
+    assert_readable(x)
+    out <- TRUE
+
+    tryCatch(
+        Rsamtools::TabixFile(x),
+        warning = function(x) { out <<- FALSE },
+        error = function(x) { out <<- FALSE }
+    )
+
+    return(out)
+}
+
+empty_methy_query_output <- function() {
+    tibble::tibble(
+        "sample" = character(),
+        "chr" = character(),
+        "pos" = integer(),
+        "strand" = character(),
+        "statistic" = numeric(),
+        "read_name" = character()
+    )
+}
+
 guess_input_type <- function(x) {
     if (is(x, "ModBamResult")) {
         return("modbam")
     }
 
     if (is(x, "character")) {
-        if (can_open_tabix(x)) {
+        if (all(map_lgl(x, can_open_tabix))) {
             return("tabix")
         }
     }

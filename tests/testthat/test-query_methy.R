@@ -4,35 +4,59 @@ test_that("Querying methylation works", {
     mbr <- load_example_modbamresult()
 
     # test
-    expect_silent(methy_data1 <- query_methy(methy(nmr), "chr7", 6703892, 6730431))
+    # each query is half of Peg3
+    queries <- tibble(
+        chr = c("chr7", "chr7"),
+        start = c(6703892, 6717162),
+        end = c(6717161, 6730431)
+    )
+
+    # test basic operation
+    expect_silent(methy_data_reg <- query_methy(nmr, queries$chr[1], queries$start[1], queries$end[2]))
     expect_equal(
-        colnames(methy_data1),
+        colnames(methy_data_reg),
         c("sample", "chr", "pos", "strand", "statistic", "read_name", "mod_prob")
     )
-    expect_silent(query_methy(methy(nmr), c("chr7", "chr7"), c(6703892, 6717163), c(6717162, 6730431)))
-    expect_silent(query_methy(methy(nmr), c("chr7", "chr7"), c(6703892, 6717163), c(6717162, 6730431), simplify = FALSE))
+    expect_silent(query_methy(nmr, queries$chr, queries$start, queries$end))
+    expect_silent(query_methy(nmr, queries$chr, queries$start, queries$end, simplify = FALSE))
 
-    expect_silent(methy_data2 <- query_methy(nmr, "chr7", 6703892, 6730431))
-    expect_equal(methy_data1, methy_data2)
+    # test working on direct methy
+    query_methy(methy(nmr), queries$chr[1], queries$start[1], queries$end[2])
 
+    # test working on methods
+    expect_silent(methy_data_fct <- query_methy(nmr, factor(queries$chr[1]), queries$start[1], queries$end[2]))
+    expect_equal(methy_data_reg, methy_data_fct)
 
-    expect_silent(gene_methy_data <- query_methy_gene(nmr, "Peg3"))
-    expect_equal(methy_data1, gene_methy_data)
+    # test working on gene
+    expect_silent(methy_data_gene <- query_methy_gene(nmr, "Peg3"))
+    expect_equal(methy_data_fct, methy_data_gene)
 
+    # test warnings and errors
     expect_warning(expect_error(query_methy(nmr, "Missing", 1, 1000)))
     expect_error(query_methy_gene(nmr, "Missing"))
 
-    regions <- data.frame(
-        chr = c("chr7", "chr7"),
-        start = c(6703892, 6717161),
-        end = c(6717162, 6730431)
+    # test working on table queries
+    expect_silent(query_methy_df(methy(nmr), queries))
+
+    # test working on GRanges
+    regions_gr <- GenomicRanges::GRanges(queries)
+    expect_silent(methy_data_gr <- query_methy_gr(nmr, regions_gr))
+    expect_equal(methy_data_reg, methy_data_gr)
+
+    # test working on modbam
+    expect_silent(methy_data_modbam <- query_methy(mbr, queries$chr[1], queries$start[1], queries$end[2]))
+    expect_equal(colnames(methy_data_reg), colnames(methy_data_modbam))
+
+    queries_warn <- tibble(
+        chr = c("chr7", "chr7", "chr7", "foo"),
+        start = c(6703892, 6717162, 10000, 1),
+        end = c(6717161, 6730431, 20000, 2)
     )
 
-    expect_silent(query_methy_df(methy(nmr), regions))
-
-    regions_gr <- GenomicRanges::GRanges(regions)
-
-    query_methy_gr(methy(nmr), regions_gr)
-
-    expect_silent(query_methy(mbr, "chr7", 6703892, 6730431))
+    # test ordering of unsimplified output
+    expect_warning(
+        methy_data_list <- query_methy(nmr, queries_warn$chr, queries_warn$start, queries_warn$end, simplify = FALSE),
+        "requested sequences missing from tabix file and will be excluded from query:foo"
+    )
+    expect_true(length(methy_data_list) == 4)
 })

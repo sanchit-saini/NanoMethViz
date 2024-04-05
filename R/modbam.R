@@ -68,7 +68,8 @@ parse_modbam <- function(x, sample, mod_code) {
         dplyr::select("read_name", "chr", "strand", "modbam_stats") %>%
         tidyr::unnest("modbam_stats") %>%
         tidyr::drop_na() %>%
-        dplyr::mutate(sample = sample, .before = 1)
+        dplyr::mutate(sample = sample, .before = 1) %>%
+        dplyr::select("sample", "chr", "pos", "strand", "statistic", "read_name")
 }
 
 read_bam <- function(bam_file, query = NULL) {

@@ -29,8 +29,8 @@ test_that("Stacking works", {
         }
 
         for (j in 1:(nrow(group_reads) - 1)) {
-            expect_true(group_reads$end[j] < group_reads$start[j+1],
-                info = glue::glue("no reads overlap within each group: {group_reads$end[j]} > {group_reads$start[j+1]}"))
+            expect_true(group_reads$end[j] < group_reads$start[j + 1],
+                info = glue::glue("no reads overlap within each group: {group_reads$end[j]} > {group_reads$start[j + 1]}"))
         }
     }
 })

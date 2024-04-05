@@ -8,9 +8,9 @@ theme_methy_heatmap <- ggplot2::theme_bw() +
             panel.grid.minor = ggplot2::element_blank()
         )
 
-heatmap_fill_scale <- scico::scale_fill_scico(palette = 'imola', direction = -1)
-heatmap_col_scale <- scico::scale_colour_scico(palette = 'imola', direction = -1)
+heatmap_fill_scale <- scico::scale_fill_scico(palette = "imola", direction = -1)
+heatmap_col_scale <- scico::scale_colour_scico(palette = "imola", direction = -1)
 
-# Future releast candidate
-# heatmap_fill_scale <- scico::scale_fill_scico(palette = 'roma', direction = -1)
-# heatmap_col_scale <- scico::scale_colour_scico(palette = 'roma', direction = -1)
+# Future release candidate
+# heatmap_fill_scale <- scico::scale_fill_scico(palette = "roma", direction = -1)
+# heatmap_col_scale <- scico::scale_colour_scico(palette = "roma", direction = -1)

@@ -31,14 +31,11 @@ plot_gene_impl <- function(
         window_prop <- c(window_prop, window_prop)
     }
 
-    sample_anno <- samples(x)
     exons_anno <- query_exons_symbol(x, symbol = gene)
 
-    feature <- list()
     feature_chr <- unique(exons_anno$chr)
     feature_start <- min(exons_anno$start)
     feature_end <- max(exons_anno$end)
-    window_size <- round((feature_end - feature_start) * window_prop)
 
     plot_region(
         x = x,
@@ -84,4 +81,3 @@ setMethod("plot_gene", signature(x = "NanoMethResult", gene = "character"),
 setMethod("plot_gene", signature(x = "ModBamResult", gene = "character"),
     plot_gene_impl
 )
-

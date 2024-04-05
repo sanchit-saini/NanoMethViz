@@ -84,7 +84,7 @@ plot_mds <- function(x, top = 500, plot_dims = c(1, 2), labels = colnames(x), gr
             }
             p <- p +
                 ggplot2::geom_point(aes(colour = .data$group)) +
-                ggplot2::scale_color_continuous(name = legend_name) 
+                ggplot2::scale_color_continuous(name = legend_name)
         } else {
             # discrete colour palette
             if (is.null(labels)) {

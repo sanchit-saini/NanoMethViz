@@ -3,7 +3,7 @@
 #' Query a data.frame, NanoMethResult or ModBamResult for exon annotation.
 #'
 #' @param x the object to query.
-#' 
+#'
 #' @return data.frame of queried exons.
 #'
 #' @name query_exons

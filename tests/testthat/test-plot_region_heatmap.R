@@ -24,4 +24,3 @@ test_that("Plotting region methylation works without exons", {
 
     expect_silent(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431))
 })
-

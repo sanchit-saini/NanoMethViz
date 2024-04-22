@@ -80,7 +80,7 @@ Suggests:
     covr
 LinkingTo: Rcpp
 License: Apache License (>= 2.0)
-SystemRequirements: C++17
+SystemRequirements: C++20
 VignetteBuilder: knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

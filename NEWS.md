@@ -10,6 +10,7 @@
 * Added check to remove hard-clipped reads because they may not have matching mod strings.
 * Changed gene annotation to always put label on visible isoforms, previously labels are plotted at the center of isoform.
 * Changed the order of columns when querying from ModBam to be the same as when querying from Tabix, with readname at the end instead of being the second column.
+* Changed C++ requirement to C++17 from C++20.
 * Fixed memory leak in bam parsing due to out of bounds access.
 * Fixed crash when CIGAR doesn't match length of SEQ.
 

@@ -216,11 +216,11 @@ query_methy_tabix <- function(x, chr, start, end, force) {
         }
 
         read_methy_table <- function(x) {
-            readr::read_table(
-                x,
-                col_names = methy_col_names(),
-                col_types = methy_col_types()
-            )
+            read.delim(
+                textConnection(x),
+                col.names = methy_col_names()
+            ) %>%
+                tibble::tibble()
         }
         read_methy_table(x)
     }

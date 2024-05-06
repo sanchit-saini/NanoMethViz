@@ -215,14 +215,7 @@ query_methy_tabix <- function(x, chr, start, end, force) {
             x <- paste0(x, "\n")
         }
 
-        read_methy_table <- function(x) {
-            read.delim(
-                textConnection(x),
-                col.names = methy_col_names()
-            ) %>%
-                tibble::tibble()
-        }
-        read_methy_table(x)
+        read_methy_lines(x)
     }
 
     methy_data <- lapply(
@@ -319,4 +312,13 @@ guess_input_type <- function(x) {
     }
 
     return("uknown")
+}
+
+read_methy_lines <- function(x) {
+    read.delim(
+        textConnection(x),
+        header = FALSE,
+        col.names = methy_col_names()
+    ) %>%
+        tibble::tibble()
 }

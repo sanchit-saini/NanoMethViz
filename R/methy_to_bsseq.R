@@ -1,6 +1,6 @@
 #' Create BSSeq object from methylation tabix file
 #'
-#' @param methy the path to the methylation tabix file.
+#' @param methy the NanoMethResult object or path to the methylation tabix file.
 #' @param out_folder the folder to store intermediate files. One file is created
 #'   for each sample and contains columns "chr", "pos", "total" and
 #'   "methylated".
@@ -18,24 +18,27 @@ methy_to_bsseq <- function(
     verbose = TRUE
 ) {
     if (is(methy, "NanoMethResult")) {
-        methy <- NanoMethViz::methy(methy)
+        methy_path <- NanoMethViz::methy(methy)
+    } else {
+        methy_path <- methy
+        assert_that(fs::file_exists(methy_path))
     }
 
-    if (verbose) {
-        timed_log("creating intermediate files...")
-    }
+    timed_log("creating intermediate files...", verbose = verbose)
 
-    files <- convert_methy_to_dss(methy, out_folder)
+    files <- convert_methy_to_dss(methy_path, out_folder)
+
+    if (is(methy, "NanoMethResult")) {
+        sample_anno <- NanoMethViz::samples(methy)
+    } else {
+        sample_anno <- tibble::tibble(sample = files$sample)
+    }
 
     if (verbose) {
         timed_log("creating bsseq object...")
     }
 
-    out <- create_bsseq_from_files(
-        files$file_path,
-        files$sample,
-        verbose = verbose
-    )
+    out <- create_bsseq_from_files(files$file_path, sample_anno, verbose = verbose)
 
     if (verbose) {
         timed_log("done")
@@ -72,7 +75,7 @@ convert_methy_to_dss <- function(
 #' @importFrom purrr map
 #' @importFrom dplyr select distinct arrange mutate
 #' @importFrom bsseq BSseq
-create_bsseq_from_files <- function(paths, samples, verbose = TRUE) {
+create_bsseq_from_files <- function(paths, sample_anno, verbose = TRUE) {
     readr::local_edition(1) # temporary fix for vroom bad value
     read_dss <- purrr::partial(
         read_tsv,
@@ -83,6 +86,8 @@ create_bsseq_from_files <- function(paths, samples, verbose = TRUE) {
             methylated = col_double()
         )
     )
+
+    samples <- sample_anno$sample
 
     if (verbose) {
         timed_log("reading in parsed data...")
@@ -145,9 +150,7 @@ create_bsseq_from_files <- function(paths, samples, verbose = TRUE) {
         sampleNames = samples
     )
 
-    SummarizedExperiment::colData(result) <- S4Vectors::DataFrame(
-        sample = samples
-    )
+    SummarizedExperiment::colData(result) <- S4Vectors::DataFrame(sample_anno)
 
     rownames(SummarizedExperiment::colData(result)) <- samples
 

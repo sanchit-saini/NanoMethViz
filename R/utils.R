@@ -94,9 +94,11 @@ assert_has_columns <- function(x, cols) {
     }
 }
 
-timed_log <- function(...) {
+timed_log <- function(..., verbose = TRUE) {
     time_stamp <- paste0("[", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "] ")
-    message(time_stamp, ...)
+    if (verbose) {
+        message(time_stamp, ...)
+    }
 }
 
 gene_pos_range <- function(nmr, gene) {

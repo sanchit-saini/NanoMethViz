@@ -8,14 +8,13 @@ sort_methy_file <- function(x) {
     assert_readable(x)
 
     if (.Platform$OS.type == "windows") {
-        methy_df <- data.table::fread(
+        methy_df <- readr::read_tsv(
             x,
-            header = FALSE,
-            col.names = methy_col_names(),
-            showProgress = FALSE,
-            data.table = FALSE)
+            col_names = methy_col_names(),
+            col_types = methy_col_types()
+        )
         methy_df <- dplyr::arrange(methy_df, .data$chr, .data$pos)
-        readr::write_tsv(methy_df, x, col_names = FALSE)
+        readr::write_tsv(methy_df, x, col_names = FALSE, progress = FALSE)
     } else {
         cmd <- glue::glue("sort --compress-program=gzip -k2,3V {x} -o {x}")
         system(cmd)

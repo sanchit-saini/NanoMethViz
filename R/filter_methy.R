@@ -55,12 +55,10 @@ filter_methy <- function(x, output_file, ...) {
         lines_read <<- lines_read + nrow(x)
         filtered_x <- filter_fn(x)
         lines_kept <<- lines_kept + nrow(filtered_x)
-        data.table::fwrite(
+        readr::write_tsv(
             filtered_x,
             file = output_tsv,
-            sep = "\t",
-            append = TRUE,
-            scipen = 999L
+            append = TRUE
         )
     }
     readr::local_edition(1) # temporary fix for vroom bad value

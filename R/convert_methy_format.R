@@ -141,20 +141,18 @@ convert_methy_format <- function(
             "megalodon" = reformat_megalodon
         )
 
-        callback_f <- function(x, i) {
-            data.table::fwrite(
+        writer_fn <- function(x, i) {
+            readr::write_tsv(
                 reformatter(x, sample = element$sample),
                 file = output_file,
-                sep = "\t",
-                append = TRUE,
-                scipen = 999L
+                append = TRUE
             )
         }
         readr::local_edition(1) # temporary fix for vroom bad value
         readr::read_tsv_chunked(
             element$file,
             col_types = col_types,
-            readr::SideEffectChunkCallback$new(callback_f)
+            readr::SideEffectChunkCallback$new(writer_fn)
         )
     }
 

@@ -44,14 +44,15 @@ which will affect all plotting functions in NanoMethviz.}
 }
 \value{
 A table containing the data within the queried regions. If simplify
-is TRUE (default) then all data is contained within one table, otherwise it
-is a list of tables where each element is the data from one region.
+is TRUE (default) then returns all data in a single table, otherwise returns
+a list of tables where each table is the data from one region.
 }
 \description{
 Query methylation data
 }
 \details{
-The argument \code{site_filter} can be set globally using the \code{options(site_filter = ...)} command.
+The argument \code{site_filter} can be set globally using the \code{options(site_filter = ...)} command. The same data entry may appear multiple times in the output
+if it overlaps multiple regions.
 }
 \examples{
 nmr <- load_example_nanomethresult()

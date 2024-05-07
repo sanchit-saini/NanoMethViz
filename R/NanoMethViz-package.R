@@ -21,6 +21,7 @@
 #' @importFrom tibble tibble as_tibble add_column
 #' @importFrom withr defer
 #' @importFrom R.utils gunzip
+#' @importFrom utils read.delim
 #' @import cpp11
 #' @import patchwork
 #' @import assertthat

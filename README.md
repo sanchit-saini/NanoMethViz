@@ -69,19 +69,14 @@ of features.
 
 ![](img/agg_genes.png)
 
-### Spaghetti plot
+### Region Methylation Plot
 
-The spaghetti plot shows the smoothed methylation probabilities over a specific
-region, along with the methylation probabilities along individual long reads.
-
-![](img/peg3_spaghetti.png)
-
-### Heatmap
-
-The heatmap shows methylation probabilities on individual sites along stacked
+The region methylation plot can visualise the methylation profile of a region
+of interest. As well as provide a heatmap of the methylation along individual
 reads.
 
-![](img/peg3_heatmap.png)
+![](img/peg3_gene.png)
+
 
 ## License
 

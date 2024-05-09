@@ -147,7 +147,6 @@ setMethod("plot_region_heatmap",
     }
 )
 
-#' @importFrom scico scale_colour_scico
 .plot_region_heatmap <- function(
     x,
     chr,

@@ -7,7 +7,7 @@
 methy_to_edger(methy, regions = NULL, out_folder = tempdir(), verbose = TRUE)
 }
 \arguments{
-\item{methy}{the path to the methylation tabix file.}
+\item{methy}{the NanoMethResult object or path to the methylation tabix file.}
 
 \item{regions}{the regions to calculate log-methylation ratios over. If left
 NULL, ratios will be calculated per site.}

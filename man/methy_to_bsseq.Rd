@@ -7,7 +7,7 @@
 methy_to_bsseq(methy, out_folder = tempdir(), verbose = TRUE)
 }
 \arguments{
-\item{methy}{the path to the methylation tabix file.}
+\item{methy}{the NanoMethResult object or path to the methylation tabix file.}
 
 \item{out_folder}{the folder to store intermediate files. One file is created
 for each sample and contains columns "chr", "pos", "total" and

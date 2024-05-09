@@ -31,27 +31,8 @@ BiocManager::install("NanoMethViz")
 
 ## Usage
 
-This package currently works with data from megalodon, nanopolish and f5c, to import your data please see the following vignette
-
-``` r
-vignette("ImportingData", package = "NanoMethViz")
-```
-
-An introductory example for plotting can be found in the package vignette:
-
-``` r
-vignette("Introduction", package = "NanoMethViz")
-```
-
-Other vignettes are provided for various features:
-
-``` r
-# how to use dimensionality reduction plots
-vignette("DimensionalityReduction", package = "NanoMethViz")
-
-# how to import external annotations
-vignette("ExonAnnotations", package = "NanoMethViz")
-```
+This package currently works with data from dorado, megalodon, nanopolish and f5c, for information on how to use the
+package, please refer to the [Users Guide](https://www.bioconductor.org/packages/release/bioc/vignettes/NanoMethViz/inst/doc/UsersGuide.html).
 
 ## Examples
 

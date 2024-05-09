@@ -24,14 +24,8 @@ ggsave(
 
 
 ggsave(
-    "img/peg3_spaghetti.png",
-    plot_gene(nmr, "Peg3", spaghetti = TRUE),
-    height = 600, width = 800, units = "px", dpi = 150)
-
-ggsave(
-    "img/peg3_heatmap.png",
-    plot_gene_heatmap(nmr, "Peg3") +
-        ggtitle("Peg3"),
+    "img/peg3_gene.png",
+    plot_gene(nmr, "Peg3"),
     height = 600, width = 800, units = "px", dpi = 150)
 
 ggsave(

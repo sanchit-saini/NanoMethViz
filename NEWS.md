@@ -1,3 +1,7 @@
+### Version 3.1.0
+* Added functions `get_cgi_*()` to get CpG islands annotation for mm10, GRCm39, hg19, and hg38.
+* Changed colour palette for heatmaps to have a less bright yellow on the low end.
+
 ### Version 3.0.0
 * Breaking change to smoothing strategy in plot_gene(), plot_region(), and plot_granges() to use weighted moving mean instead of loess. This deprecates the `span` argument in favour of `smoothing_window` which is defaulted to 2000 bases.
   * Smoothing for various plotting functions was previously performed using loess smoothing, this performed locally weighted linear estimation to create a smoothed line, the span argument controlled the proportion of data used in this smoothing. This parameter was difficult to tune because under a fixed span, the smoothed line became flatter as the plot region grew larger. Internally, NanoMethViz dynamically calculated a span that changed inversely proportional to the width of the plotting region, decreasing the span as the plot region grew. However the calculated span was invisible to users, and it unintuitive to users how to set a span to change the appearance of the plot.

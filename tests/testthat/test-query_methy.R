@@ -64,4 +64,12 @@ test_that("Querying methylation works", {
     methy_data_with_inf <- readLines(system.file("methy_data_with_inf.tsv", package = "NanoMethViz"))
     expect_silent(methy_data <- read_methy_lines(methy_data_with_inf))
     expect_equal(nrow(methy_data), length(methy_data_with_inf))
+
+    # test when query regions are empty
+    queries_with_empty <- tibble(
+        chr = c("chr7", "chr7", "chr7"),
+        start = c(6703892, 6717162, 0),
+        end = c(6717161, 6730431, 10)
+    )
+    expect_s3_class(query_methy_df(mbr, queries_with_empty), "data.frame")
 })

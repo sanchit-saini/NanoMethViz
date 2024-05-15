@@ -246,6 +246,8 @@ query_methy_modbam <- function(x, chr, start, end, mod_code) {
         sample = x$sample,
         path = x$path
     )
+
+    # get data for each region from each file
     out <- x %>%
         dplyr::mutate(
             mod_table = map_rows(x, function(x) {
@@ -268,10 +270,21 @@ query_methy_modbam <- function(x, chr, start, end, mod_code) {
     if (is.null(nms)) {
         warning(glue::glue("no data found in {chr}:{start}-{end}"))
     }
-    out <- list()
-    for (nm in unique(nms)) {
-        out[[nm]] <- do.call(rbind, tables[names(tables) == nm])
+
+    # extract and bind data from each region from each file
+    extract_and_bind_data <- function(nm, tables) {
+        out <- do.call(rbind, tables[names(tables) == nm])
+        if (is.null(out)) {
+            out <- empty_methy_query_output()
+        }
+        out
     }
+
+    out <- purrr::map(
+        unique(nms),
+        extract_and_bind_data,
+        tables = tables
+    )
 
     out
 }

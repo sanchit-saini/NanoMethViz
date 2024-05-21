@@ -46,13 +46,16 @@ plot_agg_regions <- function(
     regions <- ungroup(regions)
 
     # query methylation data
-    methy_data <- .get_methy_data(x, regions, flank)
-    methy_data <- .filter_empty_regions(methy_data)
-    methy_data <- .scale_methy_data(methy_data, stranded, flank)
-    methy_data <- .pos_avg(methy_data, binary_threshold = binary_threshold)
-    # unnest and annotate after position averaging to reduce data burden
-    methy_data <- .unnest_anno(methy_data, NanoMethViz::samples(x))
-    methy_data <- .bin_avg(methy_data, group_col = group_col)
+    methy_data <- plot_agg_regions.get_methy_data(x, regions, flank)
+
+    # process each methy_data list element to obtain methylation proportions at relative positions
+    methy_data <- plot_agg_regions.process_methy_data(methy_data, stranded, flank, binary_threshold)
+
+    # unnest methy_data and add sample annotation
+    methy_data <- plot_agg_regions.unnest_with_anno(methy_data, NanoMethViz::samples(x))
+
+    # take the average methylation proportion over equal sized positional bins
+    methy_data <- plot_agg_regions.avg_over_bins(methy_data, group_col = group_col)
 
     # change aes spec depending on if group_col is available
     # hacky fix to the deprecation of aes_string which handled a NULL group_col
@@ -83,6 +86,7 @@ plot_agg_regions <- function(
             data = methy_data) +
         palette
 
+    # if flank is 0, then then only annotated start and end, else annotate flanks as well
     if (flank == 0) {
         labels <- c("start", "end")
         breaks <- c(0, 1)
@@ -110,7 +114,7 @@ plot_agg_regions <- function(
         ggplot2::ylab("Average Methylation Proportion")
 }
 
-.get_methy_data <- function(x, regions, flank) {
+plot_agg_regions.get_methy_data <- function(x, regions, flank) {
     query_row_methy <- function(i, methy, regions, flank) {
         # query a larger region such that smoothing doesn't
         # misbehave around ends
@@ -135,54 +139,88 @@ plot_agg_regions <- function(
         mutate(methy_data = methy_data)
 }
 
-.filter_empty_regions <- function(methy_data) {
-    methy_data %>%
-        dplyr::filter(purrr::map_lgl(methy_data, function(x) nrow(x) != 0))
-}
+plot_agg_regions.process_methy_data <- function(methy_data, stranded, flank, binary_threshold) {
 
-.scale_methy_data <- function(methy_data, stranded, flank) {
-    for (i in seq_len(nrow(methy_data))) {
-        m_data <- methy_data$methy_data[[i]]$pos
-        within <- m_data >= methy_data$start[i] & m_data <= methy_data$end[i]
-        upstream <- m_data < methy_data$start[i]
-        downstream <- m_data > methy_data$end[i]
+    remove_empty_methy_data <- function(x) {
+        x %>%
+            dplyr::filter(purrr::map_lgl(.data$methy_data, ~nrow(.x) > 0))
+    }
 
-        out <- numeric(length(m_data))
-        out[within] <- (m_data[within] - methy_data$start[i]) / (methy_data$end[i] - methy_data$start[i])
-        out[upstream] <- (m_data[upstream] - methy_data$start[i]) / flank / 3
-        out[downstream] <- 1 + ((m_data[downstream] - methy_data$end[i]) / flank / 3)
-        if (stranded && length(methy_data$strand[i]) > 0 && methy_data$strand[i] == "-") {
-            out <- 1 - out
+    rescale_positions <- function(x, stranded, flank) {
+        # for each region, scale the position values to be between 0 and 1
+        for (i in seq_len(nrow(x))) {
+            # determine if the positions fall inside the region
+            m_data <- x$methy_data[[i]]$pos
+            within <- m_data >= x$start[i] & m_data <= x$end[i]
+            upstream <- m_data < x$start[i]
+            downstream <- m_data > x$end[i]
+
+            # rescale the positions depending on the region
+            rel_pos <- numeric(length(m_data))
+            rel_pos[within] <- (m_data[within] - x$start[i]) / (x$end[i] - x$start[i])
+
+            # flanks each take up 1/3 of the plot space
+            rel_pos[upstream] <- (m_data[upstream] - x$start[i]) / flank / 3
+            rel_pos[downstream] <- 1 + ((m_data[downstream] - x$end[i]) / flank / 3)
+
+            # flip positions for negative strand if stranded is TRUE
+            if (stranded && length(x$strand[i]) > 0 && x$strand[i] == "-") {
+                rel_pos <- 1 - rel_pos
+            }
+
+            # store rescaled positions
+            x$methy_data[[i]]$rel_pos <- rel_pos
         }
 
-        methy_data$methy_data[[i]]$rel_pos <- out
+        x
     }
 
-    methy_data
-}
+    binarise_statistics <- function(x, binary_threshold) {
+        binarise_statistc_in_df <- function(x, binary_threshold) {
+            x %>%
+                dplyr::mutate(is_methylated = e1071::sigmoid(.data$statistic) > binary_threshold)
+        }
 
-.pos_avg <- function(x, binary_threshold = 0.5) {
-    average_by_pos <- function(x) {
         x %>%
-            dplyr::group_by(.data$sample, .data$chr, .data$strand, .data$rel_pos) %>%
-            dplyr::summarise(
-                methy_prop = mean(e1071::sigmoid(.data$statistic) > binary_threshold),
-                .groups = "drop")
+            dplyr::mutate(
+                methy_data = purrr::map(
+                    .data$methy_data,
+                    binarise_statistc_in_df, binary_threshold = binary_threshold
+                )
+            )
     }
 
-    # take feature level average
-    x <- x %>%
-        dplyr::mutate(methy_data = purrr::map(.data$methy_data, average_by_pos))
+    average_binarised_methy_per_pos <- function(x) {
+        avg_methy_by_rel_pos <- function(x) {
+            x %>%
+                dplyr::group_by(.data$sample, .data$chr, .data$strand, .data$rel_pos) %>%
+                dplyr::summarise(
+                    methy_prop = mean(.data$is_methylated),
+                    .groups = "drop")
+        }
+
+        x %>%
+            dplyr::mutate(
+                methy_data = purrr::map(.data$methy_data, avg_methy_by_rel_pos)
+            )
+    }
+
+    methy_data %>%
+        remove_empty_methy_data() %>%
+        rescale_positions(stranded, flank) %>%
+        binarise_statistics(binary_threshold) %>%
+        average_binarised_methy_per_pos()
 }
 
-.unnest_anno <- function(x, samples_anno) {
+
+plot_agg_regions.unnest_with_anno <- function(x, samples_anno) {
     x %>%
         dplyr::select(!dplyr::any_of(c("chr", "strand", "start", "end"))) %>%
         tidyr::unnest("methy_data") %>%
         dplyr::inner_join(samples_anno, by = "sample", multiple = "all")
 }
 
-.bin_avg <- function(x, group_col, grid_size = 2^10) {
+plot_agg_regions.avg_over_bins <- function(x, group_col, grid_size = 2^10) {
     min <- -1.1 / 3
     max <- 1 + 1.1 / 3
     binned_pos <- seq(min, max, length.out = grid_size + 1)

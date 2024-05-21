@@ -1,6 +1,7 @@
 ### Version 3.1.0
 * Added functions `get_cgi_*()` to get CpG islands annotation for mm10, GRCm39, hg19, and hg38.
 * Changed colour palette for heatmaps to have a less bright yellow on the low end.
+* Changed default NanoMethViz.site_filter value to 3. This filters out any sites with less than 3 coverage.
 
 ### Version 3.0.0
 * Breaking change to smoothing strategy in plot_gene(), plot_region(), and plot_granges() to use weighted moving mean instead of loess. This deprecates the `span` argument in favour of `smoothing_window` which is defaulted to 2000 bases.

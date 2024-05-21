@@ -3,7 +3,7 @@
 .onLoad <- function(libname, pkgname) {
     opt <- options()
     new_opt <- list(
-        NanoMethViz.site_filter = 1L,
+        NanoMethViz.site_filter = 3L,
         NanoMethViz.highlight_col = "grey50"
     )
 

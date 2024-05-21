@@ -227,8 +227,7 @@ may be useful to convert the BAM files to tabix files using the
 
 In modbam files the modification calls are made along the read, allowing sequencing errors to produce modifications
 calls where there is none in the genome. This may lead to noise impacting the averaging results. The
-`NanoMethViz.site_filter` option can be used to remove sites with low coverage. We recommending setting
-`options("NanoMethViz.site_filter" = 3)` to remove any sites with coverage less than 3 from queries and plots. See
+`NanoMethViz.site_filter` option can be used to remove sites with low coverage, by default it is set to 3 to remove any sites with coverage less than 3. See
 the "Site filtering" section for more information.
 
 ```{r}
@@ -394,11 +393,11 @@ plot_mds(lmr, labels = NULL, groups = groups) +
 
 NanoMethViz offers a site filtering option to remove sites with low coverage. This is particularly useful for modbam
 files as the modifications calls are made along the reads, allowing methylation to be called at miscalled sites. The
-site filter is set to 1 by default, allowing all sites to be included. This can be changed using the option
-`NanoMethViz.site_filter`. The following will remove any sites with coverage less than 3 from queries and plots.
+site filter is set to 3 by default, to filter any sites with coverage less than 3. This can be changed using the option
+`NanoMethViz.site_filter`. The following will remove any sites with coverage less than 5 from queries and plots.
 
 ```{r, eval = FALSE}
-options("NanoMethViz.site_filter" = 3)
+options("NanoMethViz.site_filter" = 5)
 ```
 
 ## Region annotation colours

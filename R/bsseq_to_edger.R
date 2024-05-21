@@ -12,19 +12,19 @@
 #' bsseq <- methy_to_bsseq(methy)
 #' edger_mat <- bsseq_to_edger(bsseq)
 bsseq_to_edger <- function(bsseq, regions = NULL) {
-    edger_col_names <- .get_edger_col_names(bsseq)
+    edger_col_names <- bsseq_to_edger.get_edger_col_names(bsseq)
 
     if (!is.null(regions)) {
         assertthat::assert_that(is(regions, "data.frame"))
         regions <- GenomicRanges::GRanges(regions)
         edger_row_names <- regions$gene_id
     } else {
-        edger_row_names <- .get_edger_row_names(bsseq)
+        edger_row_names <- bsseq_to_edger.get_edger_row_names(bsseq)
     }
 
     # construct matrix
-    methylated <- .get_me_mat(bsseq, regions)
-    unmethylated <- .get_un_mat(bsseq, regions)
+    methylated <- bsseq_to_edger.get_me_mat(bsseq, regions)
+    unmethylated <- bsseq_to_edger.get_un_mat(bsseq, regions)
 
     edger_mat <- matrix(
         0,
@@ -89,12 +89,12 @@ bsseq_to_log_methy_ratio <- function(bsseq, regions = NULL, prior_count = 2, dro
         regions <- GenomicRanges::GRanges(regions)
         row_names <- regions$gene_id
     } else {
-        row_names <- .get_edger_row_names(bsseq)
+        row_names <- bsseq_to_edger.get_edger_row_names(bsseq)
     }
 
     col_names <- SummarizedExperiment::colData(bsseq)$sample
-    methylated <- .get_me_mat(bsseq, regions)
-    unmethylated <- .get_un_mat(bsseq, regions)
+    methylated <- bsseq_to_edger.get_me_mat(bsseq, regions)
+    unmethylated <- bsseq_to_edger.get_un_mat(bsseq, regions)
 
     log_mat <- log2(methylated + prior_count) - log2(unmethylated + prior_count)
 
@@ -108,7 +108,8 @@ bsseq_to_log_methy_ratio <- function(bsseq, regions = NULL, prior_count = 2, dro
     log_mat
 }
 
-.get_me_mat <- function(bsseq, regions) {
+# helper functions ----
+bsseq_to_edger.get_me_mat <- function(bsseq, regions) {
     if (!is.null(regions)) {
         bsseq::getCoverage(bsseq, regions, type = "M", what = "perRegionTotal")
     } else {
@@ -116,17 +117,17 @@ bsseq_to_log_methy_ratio <- function(bsseq, regions = NULL, prior_count = 2, dro
     }
 }
 
-.get_un_mat <- function(bsseq, regions) {
+bsseq_to_edger.get_un_mat <- function(bsseq, regions) {
     if (!is.null(regions)) {
         cov <- bsseq::getCoverage(bsseq, regions, type = "Cov", what = "perRegionTotal")
     } else {
         cov <- bsseq::getCoverage(bsseq, type = "Cov")
     }
-    me_mat <- .get_me_mat(bsseq, regions)
+    me_mat <- bsseq_to_edger.get_me_mat(bsseq, regions)
     cov - me_mat
 }
 
-.get_edger_col_names <- function(bsseq) {
+bsseq_to_edger.get_edger_col_names <- function(bsseq) {
     samples <- SummarizedExperiment::colData(bsseq)$sample
     me_names <- paste0(samples, "_Me")
     un_names <- paste0(samples, "_Un")
@@ -139,7 +140,7 @@ bsseq_to_log_methy_ratio <- function(bsseq, regions = NULL, prior_count = 2, dro
     edger_col_names
 }
 
-.get_edger_row_names <- function(bsseq) {
+bsseq_to_edger.get_edger_row_names <- function(bsseq) {
     gr <- bsseq::getBSseq(bsseq, type = "gr")
     seq <- as.character(SummarizedExperiment::seqnames(gr))
     pos <- as.integer(SummarizedExperiment::start(gr))

@@ -36,7 +36,7 @@ setMethod(
     ) {
         pos_style <- match.arg(pos_style)
 
-        .plot_region_heatmap(
+        plot_region_heatmap_impl(
             x = x,
             chr = chr,
             start = start,
@@ -71,7 +71,7 @@ setMethod(
     ) {
         pos_style <- match.arg(pos_style)
 
-        .plot_region_heatmap(
+        plot_region_heatmap_impl(
             x = x,
             chr = chr,
             start = start,
@@ -103,7 +103,7 @@ setMethod("plot_region_heatmap",
         subsample = 50
     ) {
         chr <- as.character(chr)
-        .plot_region_heatmap(
+        plot_region_heatmap_impl(
             x = x,
             chr = chr,
             start = start,
@@ -135,7 +135,7 @@ setMethod("plot_region_heatmap",
         subsample = 50
     ) {
         chr <- as.character(chr)
-        .plot_region_heatmap(
+        plot_region_heatmap_impl(
             x = x,
             chr = chr,
             start = start,
@@ -147,7 +147,7 @@ setMethod("plot_region_heatmap",
     }
 )
 
-.plot_region_heatmap <- function(
+plot_region_heatmap_impl <- function(
     x,
     chr,
     start,

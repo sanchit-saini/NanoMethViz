@@ -7,17 +7,17 @@ test_that("ModBamResults getters and setters work", {
     expect_s3_class(NanoMethViz::exons(mbr), "data.frame")
     expect_s3_class(NanoMethViz::samples(mbr), "data.frame")
 
-    expect_silent(
+    expect_no_warning(
         ModBamResult(
             NanoMethViz::methy(mbr),
             NanoMethViz::samples(mbr)
         )
     )
 
-    expect_silent(methy(mbr) <- methy(mbr))
+    expect_no_warning(methy(mbr) <- methy(mbr))
+    expect_no_warning(samples(mbr) <- samples(mbr))
+    expect_no_warning(exons(mbr) <- exons(mbr))
     expect_error(methy(mbr) <- "invalid_path")
-    expect_silent(samples(mbr) <- samples(mbr))
-    expect_silent(exons(mbr) <- exons(mbr))
     expect_error(exons(mbr) <- exons(mbr)[, -"strand"])
 
     expect_error(

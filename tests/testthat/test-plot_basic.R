@@ -19,18 +19,18 @@ test_that("Plotting gene works", {
 
     # test plot_gene() ----
     for (x in data_list) {
-        expect_silent(p <- plot_gene(x, "Peg3"))
+        p <- expect_no_warning(plot_gene(x, "Peg3"))
         expect_s3_class(p, "ggplot")
 
-        expect_silent(p <- plot_gene(x, "Peg3", heatmap = TRUE))
+        p <- expect_no_warning(plot_gene(x, "Peg3", heatmap = TRUE))
         expect_s3_class(p, "ggplot")
 
-        expect_silent(p <- plot_gene(x, "Peg3", heatmap = TRUE, heatmap_subsample = 5))
+        p <- expect_no_warning(plot_gene(x, "Peg3", heatmap = TRUE, heatmap_subsample = 5))
         expect_s3_class(p, "ggplot")
 
         for (bt in c(0, 0.5, 1)) {
-            expect_silent(
-                p <- plot_gene(
+            p <- expect_no_warning(
+                plot_gene(
                     x, "Peg3",
                     binary_threshold = bt
                 )
@@ -38,8 +38,8 @@ test_that("Plotting gene works", {
             expect_s3_class(p, "ggplot")
         }
         for (i in 1:nrow(params)) {
-            expect_silent(
-                p <- plot_gene(
+            p <- expect_no_warning(
+                plot_gene(
                     x, "Peg3",
                     heatmap = params$heatmap[i],
                     spaghetti = params$spaghetti[i],
@@ -55,18 +55,18 @@ test_that("Plotting gene works", {
 
     # test plot_region() ----
     for (x in data_list) {
-        expect_silent(p <- plot_region(x, "chr7", 6703892, 6730431))
+        p <- expect_no_warning(plot_region(x, "chr7", 6703892, 6730431))
         expect_s3_class(p, "ggplot")
 
-        expect_silent(p <- plot_region(x, factor("chr7"), 6703892, 6730431))
+        p <- expect_no_warning(plot_region(x, factor("chr7"), 6703892, 6730431))
         expect_s3_class(p, "ggplot")
 
-        expect_silent(p <- plot_region(nmr, "chr7", 6703892, 6730431, heatmap = TRUE, heatmap_subsample = 5))
+        p <- expect_no_warning(plot_region(nmr, "chr7", 6703892, 6730431, heatmap = TRUE, heatmap_subsample = 5))
         expect_s3_class(p, "ggplot")
 
         for (i in 1:nrow(params)) {
-            expect_silent(
-                p <- plot_region(
+            p <- expect_no_warning(
+                plot_region(
                     x, "chr7", 6703892, 6730431,
                     heatmap = params$heatmap[i],
                     spaghetti = params$spaghetti[i],
@@ -88,8 +88,8 @@ test_that("Plotting gene works", {
     grange <- GenomicRanges::GRanges("chr7:6703892-6730431")
     for (x in data_list) {
         for (i in 1:nrow(params)) {
-            expect_silent(
-                p <- plot_grange(
+            p <- expect_no_warning(
+                plot_grange(
                     x, grange,
                     heatmap = params$heatmap[i],
                     spaghetti = params$spaghetti[i]

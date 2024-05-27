@@ -6,9 +6,9 @@ test_that("Aggregate plotting works", {
 
     # test
     for (x in list(nmr, mbr)) {
-        expect_silent(plot_agg_regions(x, gene_anno))
-        expect_silent(plot_agg_regions(x, gene_anno, "sample"))
-        expect_silent(plot_agg_regions(x, gene_anno, "group"))
+        expect_no_warning(plot_agg_regions(x, gene_anno))
+        expect_no_warning(plot_agg_regions(x, gene_anno, "sample"))
+        expect_no_warning(plot_agg_regions(x, gene_anno, "group"))
     }
 })
 

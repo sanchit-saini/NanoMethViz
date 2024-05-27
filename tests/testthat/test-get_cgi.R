@@ -6,8 +6,8 @@ test_that("CGI getters work", {
         get_cgi_GRCm39
     )
 
-    for (f in cgi_getters) {
-        expect_silent(cgi_anno <- f())
+    for (cgi_fn in cgi_getters) {
+        cgi_anno <- expect_no_warning(cgi_fn())
         expect_s3_class(cgi_anno, "data.frame")
         expect_gt(nrow(cgi_anno), 0)
         expect_gt(ncol(cgi_anno), 0)

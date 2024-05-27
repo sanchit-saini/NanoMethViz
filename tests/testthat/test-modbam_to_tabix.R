@@ -14,7 +14,7 @@ test_that("Modbam to tabix conversion works", {
     expect_no_error(modbam_to_tabix(mbr, out_file))
     expect_true(file_exists(out_file))
 
-    expect_no_error(tabix_data <- read_tsv(out_file, col_names = methy_col_names()))
+    tabix_data <- expect_no_error(read_tsv(out_file, col_names = methy_col_names()))
     expect_equal(nrow(tabix_data), 10371)
     expect_equal(ncol(tabix_data), 6)
     expect_equal(unique(tabix_data$sample), "sample1")

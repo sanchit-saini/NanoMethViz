@@ -7,7 +7,7 @@ test_that("Importing nanopolish works", {
 
     # test
     expect_message(create_tabix_file(methy_calls, temp_file))
-    expect_true(is(methy_to_bsseq(temp_file), "BSseq"))
+    expect_s4_class(methy_to_bsseq(temp_file), "BSseq")
 })
 
 test_that("Importing megalodon works", {

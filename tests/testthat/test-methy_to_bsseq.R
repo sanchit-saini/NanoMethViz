@@ -5,7 +5,7 @@ test_that("methy_to_bsseq works", {
 
     # test
     expect_no_error(methy_to_bsseq(methy(nmr)))
-    expect_true(is(methy_to_bsseq(nmr), "BSseq"))
+    expect_s4_class(methy_to_bsseq(nmr), "BSseq")
     expect_equal(ncol(bss), 6)
     expect_equal(
         nrow(SummarizedExperiment::colData(bss)),
@@ -26,8 +26,12 @@ test_that("bsseq_to_* works", {
     bss <- methy_to_bsseq(NanoMethViz::methy(nmr))
 
     # test
-    expect_true(is(edger_counts <- bsseq_to_edger(bss), "matrix"))
-    expect_true(is(lmr <- bsseq_to_log_methy_ratio(bss), "matrix"))
+    edger_counts <- expect_no_warning(bsseq_to_edger(bss))
+    expect_ncol(edger_counts, 12)
+    expect_nrow(edger_counts, 4778)
+    lmr <- expect_no_warning(bsseq_to_log_methy_ratio(bss))
+    expect_ncol(lmr, 6)
+    expect_nrow(lmr, 4778)
 
     expect_equal(ncol(edger_counts), 2 * ncol(bss))
     expect_equal(ncol(lmr), ncol(bss))

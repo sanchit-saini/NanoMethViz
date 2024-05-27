@@ -3,11 +3,11 @@ test_that("Plotting region methylation heatmap works", {
     nmr <- load_example_nanomethresult()
 
     # test
-    expect_silent(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431))
-    expect_true(is(p, "ggplot"))
+    expect_no_warning(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431))
+    expect_s3_class(p, "ggplot")
 
-    expect_silent(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431, pos_style = "compact"))
-    expect_true(is(p, "ggplot"))
+    expect_no_warning(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431, pos_style = "compact"))
+    expect_s3_class(p, "ggplot")
 })
 
 test_that("Plotting region methylation works without exons", {
@@ -22,5 +22,5 @@ test_that("Plotting region methylation works without exons", {
         transcript_id = character(0),
         symbol = character(0))
 
-    expect_silent(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431))
+    expect_no_warning(p <- plot_region_heatmap(nmr, "chr7", 6703892, 6730431))
 })

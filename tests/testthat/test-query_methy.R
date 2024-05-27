@@ -12,23 +12,23 @@ test_that("Querying methylation works", {
     )
 
     # test basic operation
-    expect_silent(methy_data_reg <- query_methy(nmr, queries$chr[1], queries$start[1], queries$end[2]))
+    methy_data_reg <- expect_no_warning(query_methy(nmr, queries$chr[1], queries$start[1], queries$end[2]))
     expect_equal(
         colnames(methy_data_reg),
         c("sample", "chr", "pos", "strand", "statistic", "read_name", "mod_prob")
     )
-    expect_silent(query_methy(nmr, queries$chr, queries$start, queries$end))
-    expect_silent(query_methy(nmr, queries$chr, queries$start, queries$end, simplify = FALSE))
+    expect_no_warning(query_methy(nmr, queries$chr, queries$start, queries$end))
+    expect_no_warning(query_methy(nmr, queries$chr, queries$start, queries$end, simplify = FALSE))
 
     # test working on direct methy
     query_methy(methy(nmr), queries$chr[1], queries$start[1], queries$end[2])
 
     # test working on methods
-    expect_silent(methy_data_fct <- query_methy(nmr, factor(queries$chr[1]), queries$start[1], queries$end[2]))
+    methy_data_fct <- expect_no_warning(query_methy(nmr, factor(queries$chr[1]), queries$start[1], queries$end[2]))
     expect_equal(methy_data_reg, methy_data_fct)
 
     # test working on gene
-    expect_silent(methy_data_gene <- query_methy_gene(nmr, "Peg3"))
+    expect_no_warning(methy_data_gene <- query_methy_gene(nmr, "Peg3"))
     expect_equal(methy_data_fct, methy_data_gene)
 
     # test warnings and errors
@@ -36,15 +36,15 @@ test_that("Querying methylation works", {
     expect_error(query_methy_gene(nmr, "Missing"))
 
     # test working on table queries
-    expect_silent(query_methy_df(methy(nmr), queries))
+    expect_no_warning(query_methy_df(methy(nmr), queries))
 
     # test working on GRanges
     regions_gr <- GenomicRanges::GRanges(queries)
-    expect_silent(methy_data_gr <- query_methy_gr(nmr, regions_gr))
+    methy_data_gr <- expect_no_warning(query_methy_gr(nmr, regions_gr))
     expect_equal(methy_data_reg, methy_data_gr)
 
     # test working on modbam
-    expect_silent(methy_data_modbam <- query_methy(mbr, queries$chr[1], queries$start[1], queries$end[2]))
+    methy_data_modbam <- expect_no_warning(query_methy(mbr, queries$chr[1], queries$start[1], queries$end[2]))
     expect_equal(colnames(methy_data_reg), colnames(methy_data_modbam))
 
     queries_warn <- tibble(
@@ -62,7 +62,7 @@ test_that("Querying methylation works", {
 
     # test to make sure that reading from text connection works for methylation data
     methy_data_with_inf <- readLines(system.file("methy_data_with_inf.tsv", package = "NanoMethViz"))
-    expect_silent(methy_data <- read_methy_lines(methy_data_with_inf))
+    methy_data <- expect_no_warning(read_methy_lines(methy_data_with_inf))
     expect_equal(nrow(methy_data), length(methy_data_with_inf))
 
     # test when query regions are empty

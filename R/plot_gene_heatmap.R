@@ -92,7 +92,7 @@ plot_gene_heatmap_impl <- function(
         dplyr::slice(1) %>%
         dplyr::pull(chr)
 
-    .plot_region_heatmap(
+    plot_region_heatmap_impl(
         x = x,
         chr = chr,
         start = pos_range[1],

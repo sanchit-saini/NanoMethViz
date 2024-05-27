@@ -21,10 +21,6 @@ get_coord_map_cpp <- function(cigar) {
     .Call('_NanoMethViz_get_coord_map_cpp', PACKAGE = 'NanoMethViz', cigar)
 }
 
-get_coord_map_cpp2 <- function(cigar) {
-    .Call('_NanoMethViz_get_coord_map_cpp2', PACKAGE = 'NanoMethViz', cigar)
-}
-
 mod_tokeniser_cpp <- function(string, scores) {
     .Call('_NanoMethViz_mod_tokeniser_cpp', PACKAGE = 'NanoMethViz', string, scores)
 }

@@ -67,17 +67,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_coord_map_cpp2
-IntegerVector get_coord_map_cpp2(std::string cigar);
-RcppExport SEXP _NanoMethViz_get_coord_map_cpp2(SEXP cigarSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type cigar(cigarSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_coord_map_cpp2(cigar));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mod_tokeniser_cpp
 DataFrame mod_tokeniser_cpp(std::string string, std::string scores);
 RcppExport SEXP _NanoMethViz_mod_tokeniser_cpp(SEXP stringSEXP, SEXP scoresSEXP) {
@@ -131,7 +120,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_NanoMethViz_get_char_pos_cpp", (DL_FUNC) &_NanoMethViz_get_char_pos_cpp, 2},
     {"_NanoMethViz_cigar_tokeniser_cpp", (DL_FUNC) &_NanoMethViz_cigar_tokeniser_cpp, 1},
     {"_NanoMethViz_get_coord_map_cpp", (DL_FUNC) &_NanoMethViz_get_coord_map_cpp, 1},
-    {"_NanoMethViz_get_coord_map_cpp2", (DL_FUNC) &_NanoMethViz_get_coord_map_cpp2, 1},
     {"_NanoMethViz_mod_tokeniser_cpp", (DL_FUNC) &_NanoMethViz_mod_tokeniser_cpp, 2},
     {"_NanoMethViz_parse_bam_cpp", (DL_FUNC) &_NanoMethViz_parse_bam_cpp, 7},
     {"_NanoMethViz_parse_bam_list_cpp", (DL_FUNC) &_NanoMethViz_parse_bam_list_cpp, 7},

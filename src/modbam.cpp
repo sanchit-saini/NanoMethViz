@@ -101,69 +101,6 @@ get_coord_map_cpp(std::string cigar) {
 }
 
 // [[Rcpp::export]]
-IntegerVector
-get_coord_map_cpp2(std::string cigar) {
-    // Tokenize cigar string
-    std::vector<int> counts;
-    std::vector<char> states;
-
-    int num;
-    char ch;
-
-    // tokenise and parse the string
-    std::istringstream sstream(cigar);
-    while (sstream >> num && sstream >> ch) {
-        counts.push_back(num);
-        states.push_back(ch);
-    }
-
-    // Initialize seq and ref coordinates to 0
-    int seq_coord = 0;
-    int ref_coord = 0;
-
-    size_t token_count = std::accumulate(counts.begin(), counts.end(), 0);
-    std::vector<int> seq_map;
-    seq_map.reserve(token_count);
-    std::vector<int> ref_map;
-    ref_map.reserve(token_count);
-
-    // Loop over tokens and update coordinates and maps
-    int num_tokens = states.size();
-    for (int i = 0; i < num_tokens; i++) {
-        int current_count = counts[i];
-        switch (states[i]) {
-            case 'M':
-                for (int j = 0; j < current_count; ++j) {
-                    ++seq_coord;
-                    ++ref_coord;
-                    seq_map.push_back(seq_coord);
-                    ref_map.push_back(ref_coord);
-                }
-                break;
-            case 'I':
-            case 'S':
-                for (int j = 0; j < current_count; ++j) {
-                    ++seq_coord;
-                    seq_map.push_back(seq_coord);
-                    ref_map.push_back(NA_REAL);
-                }
-                break;
-            case 'D':
-            case 'N':
-                ref_coord += current_count;
-                break;
-        }
-
-    }
-
-    IntegerVector out(ref_map.begin(), ref_map.end());
-    out.names() = seq_map;
-
-    // Set names and return result
-    return out;
-}
-
-// [[Rcpp::export]]
 DataFrame
 mod_tokeniser_cpp(std::string string, std::string scores) {
     // Remove semicolons from string

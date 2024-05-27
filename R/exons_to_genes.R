@@ -11,6 +11,10 @@
 #' nmr <- load_example_nanomethresult()
 #' exons_to_genes(NanoMethViz::exons(nmr))
 exons_to_genes <- function(x) {
+    if (is(x, "NanoMethResult") | is(x, "ModBamResult")) {
+        x <- NanoMethViz::exons(x)
+    }
+
     x %>%
         dplyr::group_by(.data$gene_id, .data$chr, .data$strand, .data$symbol) %>%
         dplyr::summarise(start = min(.data$start), end = max(.data$end), .groups = "drop")

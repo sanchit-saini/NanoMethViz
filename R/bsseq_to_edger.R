@@ -80,6 +80,8 @@ methy_to_edger <- function(methy, regions = NULL, out_folder = tempdir(), verbos
 #' log_m_ratio <- bsseq_to_log_methy_ratio(bsseq, regions)
 
 bsseq_to_log_methy_ratio <- function(bsseq, regions = NULL, prior_count = 2, drop_na = TRUE) {
+    assertthat::assert_that(prior_count >= 0)
+
     if (prior_count < 1) {
         warning("prior_count of 1 or higher is recommended")
     }

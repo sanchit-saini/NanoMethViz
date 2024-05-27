@@ -21,7 +21,9 @@ plot_agg_genes <- function(
     span = 0.05,
     palette = ggplot2::scale_colour_brewer(palette = "Set1")
 ) {
-    gene_regions <- exons_to_genes(exons(x))
+    assertthat::assert_that(nrow(exons(x)) > 0, msg = "no exon annotations found in object")
+
+    gene_regions <- exons_to_genes(x)
     if (!is.null(genes)) {
         gene_regions <- gene_regions %>%
             filter(.data$symbol %in% genes)
@@ -49,7 +51,9 @@ plot_agg_tss <- function(
     span = 0.05,
     palette = ggplot2::scale_colour_brewer(palette = "Set1")
 ) {
-    gene_regions <- exons_to_genes(exons(x))
+    assertthat::assert_that(nrow(exons(x)) > 0, msg = "no exon annotations found in object")
+
+    gene_regions <- exons_to_genes(x)
     if (!is.null(genes)) {
         gene_regions <- gene_regions %>%
             filter(.data$symbol %in% genes)
@@ -103,7 +107,9 @@ plot_agg_tes <- function(
     span = 0.05,
     palette = ggplot2::scale_colour_brewer(palette = "Set1")
 ) {
-    gene_regions <- exons_to_genes(exons(x))
+    assertthat::assert_that(nrow(exons(x)) > 0, msg = "no exon annotations found in object")
+
+    gene_regions <- exons_to_genes(x)
     if (!is.null(genes)) {
         gene_regions <- gene_regions %>%
             filter(.data$symbol %in% genes)

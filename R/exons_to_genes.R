@@ -17,5 +17,6 @@ exons_to_genes <- function(x) {
 
     x %>%
         dplyr::group_by(.data$gene_id, .data$chr, .data$strand, .data$symbol) %>%
-        dplyr::summarise(start = min(.data$start), end = max(.data$end), .groups = "drop")
+        dplyr::summarise(start = min(.data$start), end = max(.data$end), .groups = "drop") %>%
+        dplyr::ungroup()
 }

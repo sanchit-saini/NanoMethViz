@@ -41,7 +41,7 @@ modbam_to_tabix <- function(x, out_file, mod_code = NanoMethViz::mod_code(x)) {
     }
 
     cli::cli_progress_step("Converting data to TSV")
-    tsv_file <- convert_modbam_to_tsv(x, out_file, mod_code)
+    tsv_file <- run_modbam_to_tsv_converter(x, out_file, mod_code)
 
     cli::cli_progress_step("Sorting data")
     f <- sort_methy_file(tsv_file)
@@ -54,7 +54,7 @@ modbam_to_tabix <- function(x, out_file, mod_code = NanoMethViz::mod_code(x)) {
     invisible(out)
 }
 
-convert_modbam_to_tsv <- function(x, out_file, mod_code) {
+run_modbam_to_tsv_converter <- function(x, out_file, mod_code) {
     # if .gz at end of output name then trim it so final output
     # doesn't end with .bgz.bgz
     if (stringr::str_detect(out_file, ".bgz$")) {
@@ -63,11 +63,6 @@ convert_modbam_to_tsv <- function(x, out_file, mod_code) {
     }
 
     bam_info <- dplyr::inner_join(samples(x), methy(x), by = dplyr::join_by(sample))
-
-    parse_read_chunk <- function(x) {
-        parse_modbam(x[[1]], sample, mod_code = mod_code) %>%
-            select("sample", "chr", "pos", "strand", "statistic", "read_name")
-    }
 
     n_files <- nrow(bam_info)
     for (i in seq_len(n_files)) {
@@ -85,22 +80,33 @@ convert_modbam_to_tsv <- function(x, out_file, mod_code) {
             clear = FALSE
         )
 
-        bam_file <- Rsamtools::BamFile(path, yieldSize = 2000)
-        open(bam_file)
-        while (Rsamtools::isIncomplete(bam_file)) {
-            reads <- read_bam(bam_file)
-
-            if (!is.null(reads[[1]]) && length(reads[[1]]$qname) > 0) {
-                # parse if valid data exists
-                data <- parse_read_chunk(reads)
-                readr::write_tsv(data, out_file, append = TRUE, progress = FALSE)
-            }
-
-            n_reads <- length(reads[[1]][[1]])
-            cli::cli_progress_update(n_reads, id = prog_bar_id)
-        }
-        close(bam_file)
+        write_bam_to_tsv_with_prog(path, out_file, sample, mod_code, prog_bar_id)
     }
 
     out_file
+}
+
+write_bam_to_tsv_with_prog <- function(path, out_file, sample, mod_code, prog_bar_id = NULL) {
+    parse_read_chunk <- function(x) {
+        parse_modbam(x[[1]], sample, mod_code = mod_code) %>%
+            select("sample", "chr", "pos", "strand", "statistic", "read_name")
+    }
+
+    bam_file <- Rsamtools::BamFile(path, yieldSize = 2000)
+    open(bam_file)
+    while (Rsamtools::isIncomplete(bam_file)) {
+        reads <- read_bam(bam_file)
+
+        if (!is.null(reads[[1]]) && length(reads[[1]]$qname) > 0) {
+            # parse if valid data exists
+            data <- parse_read_chunk(reads)
+            readr::write_tsv(data, out_file, append = TRUE, progress = FALSE)
+        }
+
+        if (!is.null(prog_bar_id)) {
+            n_reads <- length(reads[[1]][[1]])
+            cli::cli_progress_update(n_reads, id = prog_bar_id)
+        }
+    }
+    close(bam_file)
 }

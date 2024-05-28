@@ -12,7 +12,7 @@ test_that("Querying methylation works", {
     )
 
     # test basic operation
-    methy_data_reg <- expect_no_warning(query_methy(nmr, queries$chr[1], queries$start[1], queries$end[2]))
+    methy_data_reg <- expect_no_warning(query_methy(nmr, "chr7", 6703892, 6730431))
     expect_equal(
         colnames(methy_data_reg),
         c("sample", "chr", "pos", "strand", "statistic", "read_name", "mod_prob")

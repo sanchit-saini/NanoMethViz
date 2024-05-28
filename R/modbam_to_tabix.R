@@ -99,10 +99,8 @@ convert_modbam_to_tsv <- function(x, out_file, mod_code) {
             n_reads <- length(reads[[1]][[1]])
             cli::cli_progress_update(n_reads, id = prog_bar_id)
         }
-
+        close(bam_file)
     }
-
-    close(bam_file)
 
     out_file
 }

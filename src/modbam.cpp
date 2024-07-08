@@ -246,7 +246,7 @@ query_pos_to_genome_pos(const std::string& seq, int map_pos, const std::string& 
                         genomic_positions.at(seq_pos++) = genomic_pos++;
                     }
                     break;
-                case 'I': case 'S': case 'H':
+                case 'I': case 'S':
                     seq_pos += len;
                     break;
                 case 'D': case 'N':
@@ -357,25 +357,35 @@ parse_bam(
                 }
             }
 
-            while (base_offset >= 0) {
+            while (base_offset > 0) {
                 // if every base needs to be parsed
-                if (parse_mode == ParseMode::skip_low_prob) {
-                    if (seq.at(seq_ind) == target_base) {
-                        --base_offset;
-                        output.seq_pos.push_back(seq_ind);
-                        output.pos.push_back(gpos_map[seq_ind-1]);
-                        output.base.push_back(current_base);
-                        output.mod.push_back(current_mod);
-                        output.mod_score.push_back(0);
+                if (seq.at(seq_ind) == target_base) {
+                    
+                    if (parse_mode == ParseMode::skip_low_prob) {
+
+                        if (base_offset > 0) {
+                            output.seq_pos.push_back(seq_ind);
+                            output.pos.push_back(gpos_map[seq_ind]);
+                            output.base.push_back(current_base);
+                            output.mod.push_back(current_mod);
+                            output.mod_score.push_back(0);
+                        }
+                    } else if (parse_mode == ParseMode::skip_unknown) {
+                        continue;
                     }
 
-                // if only tagged bases need to be parsed
-                } else if (parse_mode == ParseMode::skip_unknown) {
-                    if (seq.at(seq_ind) == target_base) {
-                        --base_offset;
-                    }
+                    base_offset--;
                 }
-                if (strand == "-") {
+                if (strand == "-") {    
+                    seq_ind--;
+                } else {
+                    seq_ind++;
+                }
+
+            }
+
+            while (seq.at(seq_ind) != target_base) {
+                if (strand == "-") {    
                     seq_ind--;
                 } else {
                     seq_ind++;
@@ -383,19 +393,22 @@ parse_bam(
             }
 
             output.seq_pos.push_back(seq_ind);
-            if (strand == "-") {
-                output.pos.push_back(gpos_map[seq_ind + 1]);
-            } else {
-                output.pos.push_back(gpos_map[seq_ind - 1]);
-            }
+            output.pos.push_back(gpos_map[seq_ind]);
             output.base.push_back(current_base);
             output.mod.push_back(current_mod);
             output.mod_score.push_back(mod_prob);
+
+            if (strand == "-") {    
+                seq_ind--;
+            } else {
+                seq_ind++;
+            }
+
         }
 
         // filter out positions that are not in the genome
         for (size_t i = 0; i < output.pos.size(); ++i) {
-            if (output.pos[i] == -1) {
+            if (output.pos.at(i) == -1) {
                 output.pos.erase(output.pos.begin() + i);
                 output.seq_pos.erase(output.seq_pos.begin() + i);
                 output.base.erase(output.base.begin() + i);
@@ -470,7 +483,7 @@ parse_bam_cpp(
         );
     } catch (const std::exception& e) {
         // if an error occurs, return empty data frame
-        Rcout << e.what() << std::endl;
+        Rcerr << e.what() << std::endl;
         return DataFrame::create(
             _["pos"] = IntegerVector::create(),
             _["statistic"] = NumericVector::create()

@@ -358,30 +358,27 @@ parse_bam(
             }
 
             while (base_offset > 0) {
-                // if every base needs to be parsed
                 if (seq.at(seq_ind) == target_base) {
-                    
-                    if (parse_mode == ParseMode::skip_low_prob) {
-
-                        if (base_offset > 0) {
+                    switch (parse_mode) {
+                        case ParseMode::skip_low_prob:
                             output.seq_pos.push_back(seq_ind);
                             output.pos.push_back(gpos_map[seq_ind]);
                             output.base.push_back(current_base);
                             output.mod.push_back(current_mod);
                             output.mod_score.push_back(0);
-                        }
-                    } else if (parse_mode == ParseMode::skip_unknown) {
-                        continue;
+                            base_offset--;
+                            break;
+                        case ParseMode::skip_unknown:
+                            base_offset--;
+                            break;
                     }
-
-                    base_offset--;
                 }
+
                 if (strand == "-") {    
                     seq_ind--;
                 } else {
                     seq_ind++;
                 }
-
             }
 
             while (seq.at(seq_ind) != target_base) {

@@ -69,3 +69,26 @@ megalodon_col_types <- function() {
         mod_log_prob = readr::col_double()
     )
 }
+
+bedmethy_col_names <- function() {
+    c(
+        "chrom",
+        "start",
+        "end",
+        "modified_base_code",
+        "score",
+        "strand",
+        "start_incl",
+        "end_incl",
+        "color",
+        "n_valid_cov",
+        "fraction_modified",
+        "n_mod",
+        "n_canonical",
+        "n_other_mod",
+        "n_delete",
+        "n_fail",
+        "n_diff",
+        "n_nocall"
+    )
+}

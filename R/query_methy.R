@@ -195,36 +195,35 @@ query_methy_tabix <- function(x, chr, start, end, force) {
     if (length(chr) == 0) {
         if (!force) {
             stop("no chromosome matches between query and tabix file, please check chromosome format matches between query and methylation file.")
-        } else {
-            return(empty_methy_query_output())
         }
     }
 
     # make query into a granges object
     query <- make_granges(chr, start, end)
-    query_result <- Rsamtools::scanTabix(tabix_file, param = query)
+    if (length(query) > 0) {
+        query_result <- Rsamtools::scanTabix(tabix_file, param = query)
+        # helper function to parse tabix output
+        parse_tabix <- function(x) {
+            if (length(x) == 0) {
+                return(empty_methy_query_output())
+            }
 
-    # helper function to parse tabix output
-    parse_tabix <- function(x) {
-        if (length(x) == 0) {
-            return(empty_methy_query_output())
+            # help readr function recognise input as data text rather than path
+            if (length(x) == 1) {
+                x <- paste0(x, "\n")
+            }
+
+            read_methy_lines(x)
         }
 
-        # help readr function recognise input as data text rather than path
-        if (length(x) == 1) {
-            x <- paste0(x, "\n")
+        methy_data <- lapply(
+            query_result,
+            parse_tabix
+        )
+
+        for (i in seq_along(methy_data)) {
+            out[[names(query_result)[i]]] <- methy_data[[i]]
         }
-
-        read_methy_lines(x)
-    }
-
-    methy_data <- lapply(
-        query_result,
-        parse_tabix
-    )
-
-    for (i in seq_along(methy_data)) {
-        out[[names(query_result)[i]]] <- methy_data[[i]]
     }
 
     out

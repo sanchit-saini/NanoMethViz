@@ -9,6 +9,12 @@ test_that("Plotting gene works", {
         samples = "sample1"
     )
 
+    dmr_region <- data.frame(
+        chr = "chr7",
+        start = 6727500,
+        end = 6732000
+    )
+
     data_list <- list(nmr, mbr, mbr_lower)
 
     params <- expand.grid(
@@ -20,6 +26,9 @@ test_that("Plotting gene works", {
     # test plot_gene() ----
     for (x in data_list) {
         p <- expect_no_warning(plot_gene(x, "Peg3"))
+        expect_s3_class(p, "ggplot")
+
+        p <- expect_no_warning(plot_gene(x, "Peg3", anno_regions = dmr_region))
         expect_s3_class(p, "ggplot")
 
         p <- expect_no_warning(plot_gene(x, "Peg3", heatmap = TRUE))

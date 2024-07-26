@@ -10,6 +10,21 @@ test_that("Plotting region methylation heatmap works", {
     expect_s3_class(p, "ggplot")
 })
 
+test_that("Plotting works with GRanges",  {
+    nmr <- load_example_nanomethresult()
+    gr <- GenomicRanges::GRanges(
+        seqnames = "chr7",
+        ranges = IRanges::IRanges(start = 6703892, end = 6730431),
+        strand = "*"
+    )
+
+    expect_no_warning(p <- plot_grange_heatmap(nmr, gr))
+    expect_s3_class(p, "ggplot")
+
+    expect_no_warning(p <- plot_grange_heatmap(nmr, gr, pos_style = "compact"))
+    expect_s3_class(p, "ggplot")
+})
+
 test_that("Plotting region methylation works without exons", {
     # setup
     nmr <- load_example_nanomethresult()

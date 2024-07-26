@@ -12,7 +12,7 @@ query_methy(
   simplify = TRUE,
   force = FALSE,
   truncate = TRUE,
-  site_filter = getOption("NanoMethViz.site_filter", 1L)
+  site_filter = getOption("NanoMethViz.site_filter", 3L)
 )
 }
 \arguments{

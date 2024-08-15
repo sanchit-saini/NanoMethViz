@@ -270,8 +270,8 @@ get_n_mods(const std::string& str) {
 
 // enum for mode parsing mode
 enum class ParseMode {
-    skip_low_prob,
-    skip_unknown
+    skip_is_low_prob,
+    skip_is_unknown
 };
 
 // function for calculating genomic positions
@@ -334,10 +334,12 @@ parse_bam(
                     current_mod = std::string(mm_tok.substr(2, mod_string_end - 2));
 
                     // set parse mode
-                    if (mod_string_end == mm_tok.size() || mm_tok[mod_string_end] == '.') {
-                        parse_mode = ParseMode::skip_low_prob;
-                    } else if (mm_tok[mod_string_end] == '?') {
-                        parse_mode = ParseMode::skip_unknown;
+                    // this goes against spec, however more closely matches the real-world data behaviour
+                    // https://github.com/igvteam/igv/issues/1545
+                    if (mod_string_end == mm_tok.size() || mm_tok[mod_string_end] == '?') {
+                        parse_mode = ParseMode::skip_is_unknown;
+                    } else if (mm_tok[mod_string_end] == '.') {
+                        parse_mode = ParseMode::skip_is_low_prob;
                     } else {
                         throw std::runtime_error("Invalid mod parsing mode");
                     }
@@ -360,7 +362,7 @@ parse_bam(
             while (base_offset > 0) {
                 if (seq.at(seq_ind) == target_base) {
                     switch (parse_mode) {
-                        case ParseMode::skip_low_prob:
+                        case ParseMode::skip_is_low_prob:
                             output.seq_pos.push_back(seq_ind);
                             output.pos.push_back(gpos_map[seq_ind]);
                             output.base.push_back(current_base);
@@ -368,7 +370,7 @@ parse_bam(
                             output.mod_score.push_back(0);
                             base_offset--;
                             break;
-                        case ParseMode::skip_unknown:
+                        case ParseMode::skip_is_unknown:
                             base_offset--;
                             break;
                     }

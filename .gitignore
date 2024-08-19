@@ -14,3 +14,4 @@ renv.lock
 experimental
 .DS_Store
 .vscode
+docs

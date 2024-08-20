@@ -7,8 +7,8 @@
 #'
 #' @return invisibly returns the output file path, creates a tabix file (.bgz)
 #'   and its index (.bgz.tbi)
-#' @export
 #'
+#' @export
 #' @examples
 #' methy_calls <- system.file(package = "NanoMethViz",
 #'     c("sample1_nanopolish.tsv.gz", "sample2_nanopolish.tsv.gz"))

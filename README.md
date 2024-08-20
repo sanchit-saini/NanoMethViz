@@ -41,14 +41,14 @@ package, please refer to the [Users Guide](https://www.bioconductor.org/packages
 The MDS plot is used to visualise differences in the methylation profiles of
 multiple samples.
 
-![](img/mds.png)
+![](man/figures/mds.png)
 
 ### Feature Aggregation
 
 The feature aggregation plot can average the methylation profiles across a set
 of features.
 
-![](img/agg_genes.png)
+![](man/figures/agg_genes.png)
 
 ### Region Methylation Plot
 
@@ -56,7 +56,7 @@ The region methylation plot can visualise the methylation profile of a region
 of interest. As well as provide a heatmap of the methylation along individual
 reads.
 
-![](img/peg3_gene.png)
+![](man/figures/peg3_gene.png)
 
 
 ## License

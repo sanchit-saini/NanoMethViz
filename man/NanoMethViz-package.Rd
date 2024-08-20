@@ -18,6 +18,7 @@ The main plotting functions in this package are \code{\link[=plot_gene]{plot_gen
 Useful links:
 \itemize{
   \item \url{https://github.com/shians/NanoMethViz}
+  \item \url{https://shians.github.io/NanoMethViz/}
   \item Report bugs at \url{https://github.com/Shians/NanoMethViz/issues}
 }
 

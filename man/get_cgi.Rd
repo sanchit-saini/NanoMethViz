@@ -3,9 +3,13 @@
 \name{get_cgi}
 \alias{get_cgi}
 \title{Get CpG islands annotations}
+\usage{
+get_cgi(genome)
+}
 \value{
 tibble (data.frame) object containing CpG islands annotation.
 }
 \description{
 Helper functions are provided for obtaining CpG islands annotations from UCSC table browser.
 }
+\keyword{internal}

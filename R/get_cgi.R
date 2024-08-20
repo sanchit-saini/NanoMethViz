@@ -2,15 +2,12 @@
 #'
 #' Helper functions are provided for obtaining CpG islands annotations from UCSC table browser.
 #'
-#' @name get_cgi
-#' @rdname get_cgi
+#' @keywords internal
 #'
 #' @return tibble (data.frame) object containing CpG islands annotation.
 #'
-NULL
-
 get_cgi <- function(genome) {
-    available_genomes <- c("hg19", "hg38", "mm10", "GRCm39")
+    available_genomes <- c("hg19", "hg38", "mm10", "grcm39")
     assertthat::assert_that(
         genome %in% available_genomes,
         msg = sprintf("genome must be one of %s", paste(available_genomes, collapse = ", "))
@@ -21,7 +18,7 @@ get_cgi <- function(genome) {
         hg19 = system.file("cgi_hg19.rds", package = "NanoMethViz"),
         hg38 = system.file("cgi_hg38.rds", package = "NanoMethViz"),
         mm10 = system.file("cgi_mm10.rds", package = "NanoMethViz"),
-        GRCm39 = system.file("cgi_GRCm39.rds", package = "NanoMethViz")
+        grcm39 = system.file("cgi_GRCm39.rds", package = "NanoMethViz")
     )
 
     readRDS(rds_path)
@@ -40,11 +37,11 @@ get_cgi_mm10 <- function() {
 #' @rdname get_exons
 #'
 #' @examples
-#' cgi_GRCm39 <- get_cgi_GRCm39()
+#' cgi_GRCm39 <- get_cgi_grcm39()
 #'
 #' @export
-get_cgi_GRCm39 <- function() {
-    get_cgi("GRCm39")
+get_cgi_grcm39 <- function() {
+    get_cgi("grcm39")
 }
 
 #' @rdname get_exons

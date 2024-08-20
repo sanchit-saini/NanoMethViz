@@ -1,4 +1,78 @@
 url: https://shians.github.io/NanoMethViz/
 template:
-  bootstrap: 5
+    bootstrap: 5
+
+reference:
+  - title: Package
+    contents:
+      - NanoMethViz-package
+
+  - title: Plotting Regions
+    contents:
+      - plot_gene
+      - plot_gene_heatmap
+      - plot_region
+      - plot_region_heatmap
+      - plot_grange
+      - plot_grange_heatmap
+
+  - title: Other Plots
+    contents:
+      - plot_agg_genes
+      - plot_agg_regions
+      - plot_mds
+      - plot_pca
+      - plot_violin
+
+  - title: Feature Annotations
+    contents:
+      - get_exons_grcm39
+      - get_exons_hg19
+      - get_exons_hg38
+      - get_exons_homo_sapiens
+      - get_exons_mm10
+      - get_exons_mus_musculus
+      - exons_to_genes
+      - get_cgi_grcm39
+      - get_cgi_hg19
+      - get_cgi_hg38
+      - get_cgi_mm10
+
+  - title: Conversion
+    contents:
+      - bsseq_to_edger
+      - bsseq_to_log_methy_ratio
+      - methy_to_bsseq
+      - methy_to_edger
+      - modbam_to_tabix
+
+  - title: Querying Methylation Data
+    contents:
+      - query_methy
+      - filter_methy
+
+  - title: Data Objects
+    contents:
+      - NanoMethResult
+      - ModBamResult
+      - ModBamFiles
+      - ModBamFiles-class
+      - methy
+      - samples
+      - exons
+      - query_exons
+      - create_tabix_file
+
+  - title: Example Data
+    contents:
+      - load_example_modbamresult
+      - load_example_nanomethresult
+      - get_example_exons_mus_musculus
+
+  - title: Miscallaneous
+    contents:
+      - region_methy_stats
+      - cluster_regions
+      - cluster_reads
+      - methy_col_names
 

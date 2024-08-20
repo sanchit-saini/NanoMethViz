@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_cgi.R, R/get_exons.R
 \name{get_cgi_mm10}
 \alias{get_cgi_mm10}
-\alias{get_cgi_GRCm39}
+\alias{get_cgi_grcm39}
 \alias{get_cgi_hg19}
 \alias{get_cgi_hg38}
 \alias{get_exons}
@@ -14,7 +14,7 @@
 \usage{
 get_cgi_mm10()
 
-get_cgi_GRCm39()
+get_cgi_grcm39()
 
 get_cgi_hg19()
 
@@ -39,7 +39,7 @@ objects.
 \examples{
 cgi_mm10 <- get_cgi_mm10()
 
-cgi_GRCm39 <- get_cgi_GRCm39()
+cgi_GRCm39 <- get_cgi_grcm39()
 
 cgi_hg19 <- get_cgi_hg19()
 

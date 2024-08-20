@@ -3,7 +3,7 @@ test_that("CGI getters work", {
         get_cgi_hg19,
         get_cgi_hg38,
         get_cgi_mm10,
-        get_cgi_GRCm39
+        get_cgi_grcm39
     )
 
     for (cgi_fn in cgi_getters) {

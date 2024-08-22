@@ -54,6 +54,16 @@ modbam_to_tabix <- function(x, out_file, mod_code = NanoMethViz::mod_code(x)) {
     invisible(out)
 }
 
+create_modbam_progress_bar <- function(i, n_files, fname, total) {
+    cli::cli_progress_bar(
+            glue::glue("Converting file {i}/{n_files}: {fname}"),
+            total = total,
+            format_done = paste0("{.alert-success Data converted: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
+            format_failed = paste0("{.alert-danger Data conversion failed: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
+            clear = FALSE
+        )
+}
+
 run_modbam_to_tsv_converter <- function(x, out_file, mod_code) {
     # if .gz at end of output name then trim it so final output
     # doesn't end with .bgz.bgz
@@ -68,25 +78,17 @@ run_modbam_to_tsv_converter <- function(x, out_file, mod_code) {
     for (i in seq_len(n_files)) {
         path <- bam_info$path[i]
         sample <- bam_info$sample[i]
-
         total <- get_bam_total_reads(path)
         fname <- fs::path_file(path)
 
-        prog_bar_id <- cli::cli_progress_bar(
-            glue::glue("Converting file {i}/{n_files}: {fname}"),
-            total = total,
-            format_done = paste0("{.alert-success Data converted: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
-            format_failed = paste0("{.alert-danger Data conversion failed: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
-            clear = FALSE
-        )
-
-        write_bam_to_tsv_with_prog(path, out_file, sample, mod_code, prog_bar_id)
+        prog_bar_id <- create_modbam_progress_bar(i, n_files, fname, total)
+        modbam_file_to_tsv(path, out_file, sample, mod_code, prog_bar_id)
     }
 
     out_file
 }
 
-write_bam_to_tsv_with_prog <- function(path, out_file, sample, mod_code, prog_bar_id = NULL) {
+modbam_file_to_tsv <- function(path, out_file, sample, mod_code, prog_bar_id = NULL) {
     parse_read_chunk <- function(x) {
         parse_modbam(x[[1]], sample, mod_code = mod_code) %>%
             select("sample", "chr", "pos", "strand", "statistic", "read_name")

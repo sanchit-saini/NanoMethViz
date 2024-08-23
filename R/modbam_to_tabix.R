@@ -54,16 +54,6 @@ modbam_to_tabix <- function(x, out_file, mod_code = NanoMethViz::mod_code(x)) {
     invisible(out)
 }
 
-create_modbam_progress_bar <- function(i, n_files, fname, total) {
-    cli::cli_progress_bar(
-            glue::glue("Converting file {i}/{n_files}: {fname}"),
-            total = total,
-            format_done = paste0("{.alert-success Data converted: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
-            format_failed = paste0("{.alert-danger Data conversion failed: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
-            clear = FALSE
-        )
-}
-
 run_modbam_to_tsv_converter <- function(x, out_file, mod_code) {
     # if .gz at end of output name then trim it so final output
     # doesn't end with .bgz.bgz
@@ -81,7 +71,13 @@ run_modbam_to_tsv_converter <- function(x, out_file, mod_code) {
         total <- get_bam_total_reads(path)
         fname <- fs::path_file(path)
 
-        prog_bar_id <- create_modbam_progress_bar(i, n_files, fname, total)
+        prog_bar_id <- cli::cli_progress_bar(
+            glue::glue("Converting file {i}/{n_files}: {fname}"),
+            total = total,
+            format_done = paste0("{.alert-success Data converted: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
+            format_failed = paste0("{.alert-danger Data conversion failed: ", fname, " {.timestamp {cli::pb_elapsed}}}"),
+            clear = FALSE
+        )
         modbam_file_to_tsv(path, out_file, sample, mod_code, prog_bar_id)
     }
 

@@ -351,12 +351,7 @@ package_check <- function(packages, req_versions) {
     for (i in seq_along(packages)) {
         package <- packages[i]
         req_version <- req_versions[i]
-        if (!package %in% utils::installed.packages()) {
-            any_missing <- TRUE
-            message(glue::glue(
-                "required package '{package} (>= {req_version})' is not installed, please install using BiocManager::install(\"{package}\")"
-            ))
-        } else if (packageVersion(package) < req_version) {
+        if (!package %in% utils::installed.packages() || packageVersion(package) < req_version) {
             any_missing <- TRUE
             message(glue::glue(
                 "required package '{package} (>= {req_version})' is not installed, please install using BiocManager::install(\"{package}\")"

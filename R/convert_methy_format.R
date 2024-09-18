@@ -74,6 +74,34 @@ reformat_megalodon <- function(x, sample) {
         select(methy_col_names())
 }
 
+reformat_modkit <- function(x, sample) {
+    x %>%
+        filter(ref_position > 0) %>% # remove unmapped positions
+        add_column(sample = sample, .before = 1) %>%
+        rename(
+            chr = "chrom",
+            pos = "ref_position",
+            strand = "mod_strand",
+            statistic = "mod_qual",
+            read_name = "read_id"
+        ) %>%
+        mutate(
+            sample = as.factor(.data$sample),
+            chr = factor(.data$chr),
+            pos = as.integer(.data$pos),
+            strand = factor(.data$strand, levels = c("+", "-", "*")),
+            statistic = logit(.data$statistic)
+        ) %>%
+        select(
+            "sample",
+            "chr",
+            "pos",
+            "strand",
+            "statistic",
+            "read_name"
+        )
+}
+
 guess_methy_source <- function(methy_file) {
     assert_readable(methy_file)
 
@@ -86,6 +114,7 @@ guess_methy_source <- function(methy_file) {
         "chromosome\tstrand\tstart\tend\tread_name\tlog_lik_ratio\tlog_lik_methylated\tlog_lik_unmethylated\tnum_calling_strands\tnum_motifs\tsequence" = "nanopolish",
         "read_id\tchrm\tstrand\tpos\tmod_log_prob\tcan_log_prob\tmod_base\tmotif" = "megalodon",
         "read_id\tchrm\tstrand\tpos\tmod_log_prob\tcan_log_prob\tmod_base" = "megalodon",
+        "read_id\tforward_read_position\tref_position\tchrom\tmod_strand\tref_strand\tref_mod_strand\tfw_soft_clipped_start\tfw_soft_clipped_end\tread_length\tmod_qual\tmod_code\tbase_qual\tref_kmer\tquery_kmer\tcanonical_base\tmodified_primary_base\tinferred\tflag" = "modkit",
         stop("Format not recognised.")
     )
 }
@@ -131,14 +160,16 @@ convert_methy_format <- function(
             methy_source,
             "nanopolish" = nanopolish_col_types(),
             "f5c" = f5c_col_types(),
-            "megalodon" = megalodon_col_types()
+            "megalodon" = megalodon_col_types(),
+            "modkit" = modkit_col_types()
         )
 
         reformatter <- switch(
             methy_source,
             "nanopolish" = reformat_nanopolish,
             "f5c" = reformat_f5c,
-            "megalodon" = reformat_megalodon
+            "megalodon" = reformat_megalodon,
+            "modkit" = reformat_modkit
         )
 
         writer_fn <- function(x, i) {

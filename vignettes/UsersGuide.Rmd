@@ -152,6 +152,7 @@ but on Windows this is done by loading the entire table and sorting within R.
 
 We currently support output from
 
+* modkit extract full
 * Nanopolish
 * f5c
 * Megalodon
@@ -182,7 +183,13 @@ a .bgz file along with its tabix index. Because we have a small amount of data,
 we can read in a small portion of it for inspection, do not do this with large
 datasets as it decompresses all the data and will take very long to run.
 
-### Megalodon Data
+### Modkit data
+
+Modkit can be used to extract site-level modification data modBAM files. The
+`modkit extract full` command will output a tab-separated file with the required
+columns that can be converted useing the `create_tabix_file()` function.
+
+### Megalodon data
 
 To import data from Megalodon's modification calls, the [per-read modified
 bases](https://nanoporetech.github.io/megalodon/file_formats.html#per-read-modified-bases)
@@ -225,7 +232,7 @@ Because the BAM files contain significantly more data than the tabix files, it
 may be useful to convert the BAM files to tabix files using the 
 `modbam_to_tabix()` function for sharing the data.
 
-In modbam files the modification calls are made along the read, allowing sequencing errors to produce modifications
+In modBAM files the modification calls are made along the read, allowing sequencing errors to produce modifications
 calls where there is none in the genome. This may lead to noise impacting the averaging results. The
 `NanoMethViz.site_filter` option can be used to remove sites with low coverage, by default it is set to 3 to remove any sites with coverage less than 3. See
 the "Site filtering" section for more information.
@@ -391,7 +398,7 @@ plot_mds(lmr, labels = NULL, groups = groups) +
 
 ## Site filtering
 
-NanoMethViz offers a site filtering option to remove sites with low coverage. This is particularly useful for modbam
+NanoMethViz offers a site filtering option to remove sites with low coverage. This is particularly useful for modBAM
 files as the modifications calls are made along the reads, allowing methylation to be called at miscalled sites. The
 site filter is set to 3 by default, to filter any sites with coverage less than 3. This can be changed using the option
 `NanoMethViz.site_filter`. The following will remove any sites with coverage less than 5 from queries and plots.

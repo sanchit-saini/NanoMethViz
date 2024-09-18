@@ -1,3 +1,6 @@
+## Version 3.2.0
+* Added preliminary support for importing modkit data using `create_tabix_file()`.
+
 ## Version 3.1.0
 * Fixed parsing error for BAM files leading to an extre site to be called whenever skip width is greater than 0.
 * Added functions `get_cgi_*()` to get CpG islands annotation for mm10, GRCm39, hg19, and hg38.

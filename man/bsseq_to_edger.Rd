@@ -19,7 +19,7 @@ a matrix compatible with the edgeR differential methylation pipeline
 Convert BSseq object to edgeR methylation matrix
 }
 \examples{
-methy <- system.file("methy_subset.tsv.bgz", package = "NanoMethViz")
+methy <- system.file("methy_subset.tsv.bgz", package = "NanoMethViz", mustWork = FALSE)
 bsseq <- methy_to_bsseq(methy)
 edger_mat <- bsseq_to_edger(bsseq)
 }

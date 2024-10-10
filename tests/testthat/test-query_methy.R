@@ -61,7 +61,7 @@ test_that("Querying methylation works", {
     expect_true(length(methy_data_list) == 4)
 
     # test to make sure that reading from text connection works for methylation data
-    methy_data_with_inf <- readLines(system.file("methy_data_with_inf.tsv", package = "NanoMethViz"))
+    methy_data_with_inf <- readLines(system.file("methy_data_with_inf.tsv", package = "NanoMethViz", mustWork = FALSE))
     methy_data <- expect_no_warning(read_methy_lines(methy_data_with_inf))
     expect_equal(nrow(methy_data), length(methy_data_with_inf))
 

@@ -14,7 +14,7 @@
 #' @return a NanoMethResult object to be used with plotting functions
 #'
 #' @examples
-#' methy <- system.file(package = "NanoMethViz", "methy_subset.tsv.bgz")
+#' methy <- system.file(package = "NanoMethViz", "methy_subset.tsv.bgz", mustWork = FALSE)
 #' sample <- c(
 #'     "B6Cast_Prom_1_bl6",
 #'     "B6Cast_Prom_1_cast",

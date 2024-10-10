@@ -1,7 +1,7 @@
 test_that("Importing nanopolish works", {
     # setup
     methy_calls <- system.file(package = "NanoMethViz",
-        c("sample1_nanopolish.tsv.gz", "sample2_nanopolish.tsv.gz"))
+        c("sample1_nanopolish.tsv.gz", "sample2_nanopolish.tsv.gz"), mustWork = FALSE)
     temp_file <- paste0(tempfile(), ".tsv.bgz")
     withr::defer(file.remove(temp_file))
 
@@ -13,7 +13,7 @@ test_that("Importing nanopolish works", {
 test_that("Importing megalodon works", {
     # setup
     methy_calls <- system.file(package = "NanoMethViz",
-       "megalodon_calls.txt.gz")
+       "megalodon_calls.txt.gz", mustWork = FALSE)
     temp_file <- paste0(tempfile(), ".tsv.bgz")
     withr::defer(file.remove(temp_file))
 

@@ -11,7 +11,7 @@
 #' @examples
 #' nmr <- load_example_nanomethresult()
 load_example_nanomethresult <- function() {
-    methy <- system.file(package = "NanoMethViz", "methy_subset.tsv.bgz")
+    methy <- system.file(package = "NanoMethViz", "methy_subset.tsv.bgz", mustWork = FALSE)
 
     sample <- c(
         "B6Cast_Prom_1_bl6",
@@ -51,7 +51,7 @@ load_example_nanomethresult <- function() {
 load_example_modbamresult <- function() {
     ModBamResult(
         methy = ModBamFiles(
-            paths = system.file(package = "NanoMethViz", "peg3.bam"),
+            paths = system.file(package = "NanoMethViz", "peg3.bam", mustWork = FALSE),
             samples = "sample1"
         ),
         samples = tibble::tibble(

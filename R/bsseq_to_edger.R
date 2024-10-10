@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-#' methy <- system.file("methy_subset.tsv.bgz", package = "NanoMethViz")
+#' methy <- system.file("methy_subset.tsv.bgz", package = "NanoMethViz", mustWork = FALSE)
 #' bsseq <- methy_to_bsseq(methy)
 #' edger_mat <- bsseq_to_edger(bsseq)
 bsseq_to_edger <- function(bsseq, regions = NULL) {

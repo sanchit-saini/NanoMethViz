@@ -32,7 +32,8 @@ out_file <- paste0(tempfile(), ".tsv.bgz")
 mbr <- ModBamResult(
     methy = ModBamFiles(
         samples = "sample1",
-        paths = system.file("peg3.bam", package = "NanoMethViz")
+        paths = system.file("peg3.bam", package = "NanoMethViz",
+        mustWork = FALSE)
     ),
     samples = data.frame(
         sample = "sample1",

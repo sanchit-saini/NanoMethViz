@@ -5,7 +5,7 @@ test_that("Plotting gene works", {
 
     mbr_lower <- load_example_modbamresult()
     methy(mbr_lower) <- ModBamFiles(
-        paths = system.file(package = "NanoMethViz", "peg3_lower_case.bam"),
+        paths = system.file(package = "NanoMethViz", "peg3_lower_case.bam", mustWork = FALSE),
         samples = "sample1"
     )
 

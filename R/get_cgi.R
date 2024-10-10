@@ -15,10 +15,10 @@ get_cgi <- function(genome) {
 
     rds_path <- switch(
         genome,
-        hg19 = system.file("cgi_hg19.rds", package = "NanoMethViz"),
-        hg38 = system.file("cgi_hg38.rds", package = "NanoMethViz"),
-        mm10 = system.file("cgi_mm10.rds", package = "NanoMethViz"),
-        grcm39 = system.file("cgi_GRCm39.rds", package = "NanoMethViz")
+        hg19 = system.file("cgi_hg19.rds", package = "NanoMethViz", mustWork = FALSE),
+        hg38 = system.file("cgi_hg38.rds", package = "NanoMethViz", mustWork = FALSE),
+        mm10 = system.file("cgi_mm10.rds", package = "NanoMethViz", mustWork = FALSE),
+        grcm39 = system.file("cgi_GRCm39.rds", package = "NanoMethViz", mustWork = FALSE)
     )
 
     readRDS(rds_path)
